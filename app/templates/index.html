@@ -15,5 +15,16 @@
         {% endif %}
 
     {% endwith %}
+<p>
+
+    {% if stickers %}
+        {% for sticker in stickers %}
+            {{ sticker.title }} - {{ sticker.memo }} - {{ sticker.created }}<br>
+        {% endfor %}
+    {% else %}
+        database does not exist
+    {% endif %}
+</p>
+
 
 {% endblock %}
