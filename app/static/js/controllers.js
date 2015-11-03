@@ -2,6 +2,21 @@
 
 var superTodo = angular.module('superTodo', []);
 
+// superTodo.controller(
+// 	'StickersListCtrl', 
+// 	[
+// 		'$scope', 
+// 		'$http', 
+// 		function($scope, $http) {
+//   			$http.get('data/stickers.json').success(function(data) {
+//     			$scope.stickers = data;
+//   			});
+
+//  		 	$scope.orderProp = '!created';
+// 		}
+// 	]
+// );
+
 superTodo.controller('StickersListCtrl', function($scope){
 	$scope.stickers = [
 		{
