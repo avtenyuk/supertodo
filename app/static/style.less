@@ -1,0 +1,25 @@
+//constants
+@sticker-width: 250px;
+@sticker-height: 250px;
+
+//styles
+.sticker-style(@w:@sticker-width, @h: @sticker-height){
+	width: @w;
+	max-width: @w;
+	min-width: @w;
+	height: @h;
+	max-height: @h;
+	min-height: @h;
+}
+
+//=============================================================================
+.stickers{
+	li{
+		border: solid 2px;
+		margin: 3px;
+		padding: 5px;
+		list-style-type: none;
+		float: left;
+		.sticker-style;
+	}
+}

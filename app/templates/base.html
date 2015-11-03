@@ -1,14 +1,26 @@
 <!doctype html>
-<html lang="en" ng-app="supertodo">
+<html lang="en" ng-app="superTodo">
 <head>
     <meta charset="utf-8">
     <title>SUPER TODO - TA-DAM!!!</title>
-    <link rel="stylesheet" type="text/css" href="static/lib/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="static/style.css">
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="static/lib/jquery/jquery-2.1.4.min.js"></script>
+
+    <!-- Angular -->
     <script type="text/javascript" src="static/lib/angular/angular.min.js"></script>
     <script type="text/javascript" src="static/js/controllers.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="static/lib/bootstrap/css/bootstrap.css">
+
+    <!-- Less -->
+    <link rel="stylesheet/less" type="text/css" href="static/style.less">
+    <script type="text/javascript" src="static/lib/less/less.min.js"></script>
+    
+
 </head>
-<body ng-controller="SuperTodo">
+<body>
 
 	<div class="container-fluid">
 
@@ -19,13 +31,34 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-3">
-				Sidebar
+			<div class="col-md-3" ng-controller="FoldersListCtrl">
+				<ul class="folders">
+					<li ng-repeat="folder in folders">
+						<p>{{folder.name|angular}}</p>
+					</li>
+				</ul>
 			</div>
-			<div class="col-md-9">
+			<div class="col-md-9" ng-controller="StickersListCtrl">
 				<p><a href="/newsticker">Add new sticker</a></p>
-				{% block content %}
-				{% endblock %}
+				<!-- {% block content %}
+				{% endblock %} -->
+
+				Search: <input ng-model="query">
+				Sort by:
+		        <select ng-model="orderProp">
+		          <option value="title">Alphabetical</option>
+		          <option value="created">Newest</option>
+		        </select>
+
+				<ul class="stickers">
+					<li ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
+						<p>{{sticker.title|angular}}</p>
+						<p>{{sticker.memo|angular}}</p>
+						<p>{{sticker.created|angular}}</p>
+						<p>{{sticker.folder|angular}}</p>
+					</li>
+				</ul>
+
 			</div>
 		</div>
 
