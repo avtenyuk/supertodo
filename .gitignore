@@ -1,0 +1,7 @@
+# folders:
+.idea/*
+env/*
+
+# files:
+*.pyc
+*.tmp
