@@ -1,12 +1,5 @@
-from flask import Flask
+#!env/bin/python
+from app import app
 
 
-app = Flask(__name__)
-
-
-@app.route('/')
-def home():
-    return "200"
-
-if __name__ == '__main__':
-    app.run(debug=True)
+app.run(debug = True)
