@@ -1,0 +1,21 @@
+{
+  "name": "supertodo",
+  "version": "1.0.0",
+  "description": "todo app with notifications",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avtenyuk/supertodo.git"
+  },
+  "keywords": [
+    "todo"
+  ],
+  "author": "san4ezy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/avtenyuk/supertodo/issues"
+  },
+  "homepage": "https://github.com/avtenyuk/supertodo#readme"
+}
