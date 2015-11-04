@@ -14,7 +14,7 @@ def index():
 @app.route('/newsticker', methods= ['GET', 'POST'])
 def news_ticker():
     # stickers = Sticker.query.all()
-    stickers = db.session.query(Sticker).filter_by(folder_id=1)
+    stickers = db.session.query(Sticker).all()
     print dir(stickers[-1])
     print stickers[-1].folder
     form = StickerForm()
