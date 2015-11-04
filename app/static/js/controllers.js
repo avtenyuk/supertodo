@@ -26,7 +26,7 @@ superTodo.controller('StickersListCtrl', function($scope){
 			"folder": "root"
 		},
 		{
-			"title": "I am a sticker number two!",
+			"title": "I`m a sticker number two!", //And you must to do!
 			"memo": "Memo writes here",
 			"created": "2015-11-01",
 			"folder": "root"
