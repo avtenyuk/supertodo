@@ -6,7 +6,7 @@ from models import Sticker, Folder, Task
 
 
 def get_or_create(model, **kwargs):
-    session=db.session
+    session = db.session
     instance = session.query(model).filter_by(**kwargs).first()
     if instance:
         return instance
@@ -15,6 +15,7 @@ def get_or_create(model, **kwargs):
         session.add(instance)
         session.commit()
         return instance
+
 
 @app.route('/')
 def index():

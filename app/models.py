@@ -27,7 +27,7 @@ class Sticker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), index=True)
     memo = db.Column(db.Text)
-    created = db.Column(db.DateTime) #, default=func.now())
+    created = db.Column(db.DateTime)
     folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
     tasks = db.relationship('Task', backref='task')
 
