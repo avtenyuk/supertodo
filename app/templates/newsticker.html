@@ -5,6 +5,14 @@
 <form action="" method="post" name="newsticker">
     {{ form.hidden_tag() }}
     <p>
+        Please enter folder: <br />
+        {{ form.folder(size=100) }}
+        {% for error in form.errors.title %}
+         <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+        <br />
+    </p>
+    <p>
         Please enter title: <br />
         {{ form.title(size=100) }}
         {% for error in form.errors.title %}
@@ -21,7 +29,15 @@
         <br />
     </p>
     <p>
-        {{ form.important }} important <br />
+        Please enter task text: <br />
+        {{ form.task(size=100) }}
+        {% for error in form.errors.text %}
+         <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+        <br />
+    </p>
+    <p>
+        status: done {{ form.status }}  <br />
     </p>
     <p>
         <input type="submit" value="Add new sticker">
@@ -30,14 +46,27 @@
 </form>
 
 <hr>
-<p>
     {% if stickers %}
         {% for sticker in stickers %}
-            <p> title: {{ sticker.title }} memo: {{ sticker.memo }}, datetime: {{ sticker.created }}, folder: {{ sticker.folder }} </p>
+            <div class="sticker">
+            <p>folder: {{ sticker.folder }}</p>
+            <p> title: {{ sticker.title }}</p>
+            <p>memo: {{ sticker.memo }}</p>
+            <p>datetime: {{ sticker.created }}</p>
+            <p>
+                {% if sticker.tasks %}
+                    <ul>
+                    {% for task in sticker.tasks %}
+                        <li>{{ task.text }}, status - {{ task.status }}</li>
+                    {% endfor %}
+                    </ul>
+                {%  endif %}
+            </p>
+            </div>
+            <hr>
         {% endfor %}
     {% else %}
         <p>database does not exist</p>
     {% endif %}
-</p>
 
 

@@ -31,11 +31,11 @@ class Sticker(db.Model):
     folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
     tasks = db.relationship('Task', backref='task')
 
-    def __init__(self, title, memo):
+    def __init__(self, title, memo, folder_id):
         self.title = title
         self.memo = memo
         self.created = func.now()
-        self.folder_id = 1
+        self.folder_id = folder_id
 
     def __str__(self):
         return self.title
@@ -49,7 +49,7 @@ class Task(db.Model):
 
     def __init__(self, text, sticker_id, status):
         self.text = text
-        self.sticker_id = 1 # sticker_id
+        self.sticker_id = sticker_id
         self.status = status
 
     def __str__(self):
