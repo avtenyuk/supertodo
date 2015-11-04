@@ -1,6 +1,6 @@
 'use strict';
 
-var superTodo = angular.module('superTodo', []);
+var superTodoControllers = angular.module('superTodoControllers', []);
 
 // superTodo.controller(
 // 	'StickersListCtrl', 
@@ -17,7 +17,7 @@ var superTodo = angular.module('superTodo', []);
 // 	]
 // );
 
-superTodo.controller('StickersListCtrl', function($scope){
+superTodoControllers.controller('StickersListCtrl', function($scope){
 	$scope.stickers = [
 		{
 			"title": "The first sticker",
@@ -54,7 +54,7 @@ superTodo.controller('StickersListCtrl', function($scope){
 	$scope.orderProp = '!created';
 });
 
-superTodo.controller('FoldersListCtrl', function($scope){
+superTodoControllers.controller('FoldersListCtrl', function($scope){
 	$scope.folders = [
 		{
 			"name": "root",
@@ -69,4 +69,8 @@ superTodo.controller('FoldersListCtrl', function($scope){
 			"user": "user"
 		}
 	]
+});
+
+superTodoControllers.controller('StickersDetailCtrl', function($scope){
+
 });

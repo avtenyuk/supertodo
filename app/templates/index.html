@@ -1,30 +1,44 @@
-{% extends 'base.html' %}
-{% block content %}
+<div class="container-fluid">
 
-    {% with messages = get_flashed_messages() %}
+    <div class="row">
+        <div class="col-md-12">
+            Header
+        </div>
+    </div>
 
-        {% if messages %}
+    <div class="row">
+        <div class="col-md-3" ng-controller="FoldersListCtrl">
+            <ul class="folders">
+                <li ng-repeat="folder in folders">
+                    <p>{{folder.name|angular}}</p>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9" ng-controller="StickersListCtrl">
+            <p><a href="/newsticker">Add new sticker</a></p>
+            <!-- {% block content %}
+            {% endblock %} -->
 
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        {% else %}
+            Search: <input ng-model="query">
+            Sort by:
+            <select ng-model="orderProp">
+              <option value="title">Alphabetical</option>
+              <option value="created">Newest</option>
+            </select>
 
-        Новый таск не добавлен =(
+            <ul class="stickers">
+                <li class="sticker" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
+                    {% include "sticker.html" %}
+                </li>
+            </ul>
 
-        {% endif %}
+        </div>
+    </div>
 
-    {% endwith %}
-<p>
+    <div class="row">
+        <div class="col-md-12">
+            Footer
+        </div>
+    </div>
 
-    {% if stickers %}
-        {% for sticker in stickers %}
-            {{ sticker.title }} - {{ sticker.memo }} - {{ sticker.created }}<br>
-        {% endfor %}
-    {% else %}
-        database does not exist
-    {% endif %}
-</p>
-
-
-{% endblock %}
+</div>
