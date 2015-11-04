@@ -37,3 +37,8 @@ def news_ticker():
         flash(' Success! ')
         return redirect('/newsticker')
     return render_template('newsticker.html', form=form, title = title_page, stickers=stickers)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
