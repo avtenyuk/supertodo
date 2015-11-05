@@ -8,8 +8,8 @@ var superTodo = angular.module('superTodo', []);
  		'$scope',
  		'$http',
  		function($scope, $http) {
-   			$http.get('static/data/stickers.json').success(function(data) {
-     			$scope.stickers = data;
+   			$http.get('api/v1.0/stickers').success(function(data) {
+     			$scope.stickers = data.stickers;
    			});
 
   		 	$scope.orderProp = '!created';
