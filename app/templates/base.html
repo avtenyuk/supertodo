@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="superTodo">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="utf-8">
     <title>SUPER TODO - TA-DAM!!!</title>
@@ -9,8 +9,8 @@
 
     <!-- Angular -->
     <script type="text/javascript" src="static/lib/angular/angular.min.js"></script>
-    <script type="text/javascript" src="static/lib/angular/route.js"></script>
-    <script type="text/javascript" src="static/js/app.js"></script>
+    <script type="text/javascript" src="static/lib/angular/angular-route.min.js"></script>
+{#    <script type="text/javascript" src="static/js/app.js"></script>#}
     <script type="text/javascript" src="static/js/controllers.js"></script>
 
     <!-- Bootstrap -->
@@ -28,7 +28,7 @@
 </head>
 <body>
 
-	<div ng-view></div>
+	<ng-view class="ng-scope"></ng-view>
 
 {#    <!-- Modal -->#}
 {#    <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">#}

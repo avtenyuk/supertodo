@@ -8,7 +8,7 @@ from models import Sticker
 @app.route('/')
 def index():
     stickers = db.session.query(Sticker).filter_by(title='a1')
-    return render_template('index.html', message=None, title='Home', stickers=stickers)
+    return render_template('base.html', message=None, title='Home', stickers=stickers)
 
 
 @app.route('/newsticker', methods= ['GET', 'POST'])
