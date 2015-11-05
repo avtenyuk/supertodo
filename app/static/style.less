@@ -2,6 +2,49 @@
 @sticker-width: 250px;
 @sticker-height: 250px;
 
+@color_black: #373737;
+@color_gray_dark: #464646;
+@color_gray_light: #909090;
+@color_blue_dark: #204d74;
+@color_blue_light: #3386c2;
+@color_yellow: #ffe22d;
+
+@sticker_color_yellow: #ffff66;
+@sticker_color_red: #ff6666;
+@sticker_color_blue: #6699cc;
+@sticker_color_green: #66cc99;
+@sticker_color_white: #eeeeee;
+
+.font(@color:@color_black, @weight:normal){
+  font-weight: @weight;
+  color: @color;
+}
+
+.font_h1(@c:@color_black, @w:normal){
+  .font(@c, @w);
+  font-size: 32px;
+}
+.font_h2(@c:@color_black, @w:normal){
+  .font(@c, @w);
+  font-size: 24px;
+}
+.font_h3(@c:@color_black, @w:normal){
+  .font(@c, @w);
+  font-size: 20px;
+}
+.font_h4(@c:@color_black, @w:normal){
+  .font(@c, @w);
+  font-size: 16px;
+}
+.font_h5(@c:@color_black, @w:normal){
+  .font(@c, @w);
+  font-size: 13px;
+}
+.font_h6(@c:@color_black, @w:normal){
+  .font(@c, @w);
+  font-size: 11px;
+}
+
 //styles
 .sticker-style(@w:@sticker-width, @h: @sticker-height){
 	width: @w;
@@ -12,14 +55,82 @@
 	min-height: @h;
 }
 
-//=============================================================================
+//base.html====================================================================
 .stickers{
-	li{
-		border: solid 2px;
-		margin: 3px;
+	li.sticker{
+		//border: solid 2px;
+		margin: 5px;
 		padding: 5px;
 		list-style-type: none;
 		float: left;
 		.sticker-style;
 	}
+}
+
+.buttons{
+  a{
+	color: @color_gray_dark;
+  }
+}
+
+//sticker.html=================================================================
+.sticker{
+  position: relative;
+  height: 100%;
+  box-shadow: 0 0 3px @color_gray_dark;
+  background: @sticker_color_yellow;
+  .header{
+	width: 100%;
+	height: 20px;
+	max-height: 20px;
+	border-bottom: solid 1px;
+	position: relative;
+	.title{
+	  .font_h4;
+	  overflow: hidden;
+	  height: 20px;
+	  max-height: 20px;
+	  width: 200px;
+	  max-width: 200px;
+	  position: relative;
+	}
+	.buttons{
+	  .font_h5(@color_gray_light, bold);
+	  position: absolute;
+	  right: 0;
+	  top: 0;
+	}
+  }
+  .body{
+	position: relative;
+	height: 200px;
+	overflow: auto;
+	.memo{
+	  .font_h5;
+
+	}
+	.tasks{
+	  .font_h5;
+	}
+  }
+  .footer{
+	position: relative;
+	width: 100%;
+	height: 20px;
+	max-height: 20px;
+	border-top: solid 1px;
+	.date{
+	  .font_h6(@color_gray_light, bold);
+	}
+	.buttons{
+	  .font_h5(@color_gray_light, bold);
+	  position: absolute;
+	  right: 0;
+	  bottom: 0;
+	  .btn{
+		padding: 0;
+		margin: 0;
+	  }
+	}
+  }
 }

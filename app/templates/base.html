@@ -13,10 +13,14 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" type="text/css" href="static/lib/bootstrap/css/bootstrap.css">
+    <script type="text/javascript" src="static/lib/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Less -->
     <link rel="stylesheet/less" type="text/css" href="static/style.less">
     <script type="text/javascript" src="static/lib/less/less.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css">
     
 
 </head>
@@ -51,11 +55,8 @@
 		        </select>
 
 				<ul class="stickers">
-					<li ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
-						<p>{{sticker.title|angular}}</p>
-						<p>{{sticker.memo|angular}}</p>
-						<p>{{sticker.created|angular}}</p>
-						<p>{{sticker.folder|angular}}</p>
+					<li class="sticker" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
+						{% include "sticker.html" %}
 					</li>
 				</ul>
 
@@ -69,6 +70,17 @@
 		</div>
 
 	</div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body sticker">
+                    {% include "sticker.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
