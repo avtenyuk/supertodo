@@ -22,6 +22,10 @@ class Folder(db.Model):
     def __str__(self):
         return self.name
 
+    def as_json(self):
+
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Sticker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +44,9 @@ class Sticker(db.Model):
     def __str__(self):
         return self.title
 
+    def as_json(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,3 +61,6 @@ class Task(db.Model):
 
     def __str__(self):
         return self.text
+
+    def as_json(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
