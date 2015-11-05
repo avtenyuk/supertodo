@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash
+from flask import render_template, redirect, flash, url_for
 
 from app import app, db
 from forms import StickerForm
@@ -24,7 +24,7 @@ def index():
 
 
 @app.route('/newsticker', methods= ['GET', 'POST'])
-def news_ticker():
+def new_ticker():
     stickers = db.session.query(Sticker).all()
     form = StickerForm()
     title_page = 'Add new sticker'
@@ -42,3 +42,14 @@ def news_ticker():
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html'), 404
+
+@app.route('/newsticker/delete/<int:id>')
+def delete_sticker(id):
+    sticker = Sticker.query.get(id)
+    if sticker == None:
+        flash('Sticker not found')
+        return redirect('/newsticker')
+    db.session.delete(sticker)
+    db.session.commit()
+    flash('Sticker number {} has been deleted'.format(id))
+    return redirect('/newsticker')
