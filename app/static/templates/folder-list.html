@@ -1,3 +1,4 @@
-<ul class="folders" ng-repeat="folder in folders">
-    <li><a href="#!/folder/{{folder.id}}">{{folder.name}}</a></li>
+<ul class="folders">
+    <li><a href="#!/">ALL</a></li>
+    <li ng-repeat="folder in folders"><a href="#!/folder/{{folder.id}}">{{folder.name}}</a></li>
 </ul>
