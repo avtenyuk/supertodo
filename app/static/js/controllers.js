@@ -1,11 +1,19 @@
 'use strict';
 
-var app = angular.module('app', ['ui.router']);
+angular.module('HashBangURLs', []).config(['$locationProvider', function($location) {
+  $location.hashPrefix('!');
+}]);
+
+angular.module('HTML5ModeURLs', []).config(['$stateProvider', function($route) {
+  $route.html5Mode(true);
+}]);
+
+var app = angular.module('app', ['ui.router', 'HashBangURLs']);
 
 app.config(function($stateProvider){
     $stateProvider
         .state('index', {
-            url: "#/",
+            url: "/",
             views: {
                 "view-folder-list": {
                     templateUrl: "static/templates/folder-list.html",
@@ -18,7 +26,7 @@ app.config(function($stateProvider){
             }
         })
         .state('folder', {
-            url: "#/folder/:id",
+            url: "/folder/:id",
             views: {
                 "view-folder-list": {
                     templateUrl: "static/templates/folder-list.html",
@@ -96,7 +104,8 @@ app.controller('StickerListCtrl',['$scope', '$http', function($scope, $http) {
 }]);
 //
 //Folder List Controller
-app.controller('FolderListCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+app.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams', function($scope, $http, $location, $stateParams){
+    console.log($stateParams);
     $http.get('static/data/folders.json').success(function(data) {
         $scope.folders = data.folders;
     });
