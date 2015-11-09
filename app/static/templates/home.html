@@ -1,0 +1,20 @@
+		<div class="row">
+			<div class="col-md-3" ng-controller="FolderListCtrl">
+				<ul class="folders">
+				</ul>
+			</div>
+			<div class="col-md-9" ng-controller="StickerListCtrl">
+				<p><a href="/newsticker">Add new sticker</a></p>
+
+				Search: <input ng-model="query">
+				Sort by:
+		        <select ng-model="orderProp">
+		          <option value="title">Alphabetical</option>
+		          <option value="created">Newest</option>
+		        </select>
+
+				<ul class="stickers">
+				</ul>
+
+			</div>
+		</div>

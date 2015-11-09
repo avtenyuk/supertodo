@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "id": 1,
+            "name": "default",
+            "user": "user"
+        },
+        {
+            "id": 2,
+            "name": "home",
+            "user": "user"
+        },
+        {
+            "id": 3,
+            "name": "work",
+            "user": "user"
+        }
+    ]
+}

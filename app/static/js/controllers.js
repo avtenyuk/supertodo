@@ -1,72 +1,132 @@
 'use strict';
 
-var superTodo = angular.module('superTodo', []);
+var app = angular.module('app', ['ui.router']);
 
- superTodo.controller(
- 	'StickersListCtrl',
- 	[
- 		'$scope',
- 		'$http',
- 		function($scope, $http) {
-   			$http.get('api/v1.0/stickers').success(function(data) {
-     			$scope.stickers = data.stickers;
-   			});
+app.config(function($stateProvider){
+    $stateProvider
+        .state('index', {
+            url: "#/",
+            views: {
+                "view-folder-list": {
+                    templateUrl: "static/templates/folder-list.html",
+                    controller: 'FolderListCtrl'
+                },
+                "view-sticker-list": {
+                    templateUrl: "static/templates/stickers.html",
+                    controller: 'StickerListCtrl'
+                }
+            }
+        })
+        .state('folder', {
+            url: "#/folder/:id",
+            views: {
+                "view-folder-list": {
+                    templateUrl: "static/templates/folder-list.html",
+                    controller: 'FolderDetailCtrl'
+                },
+                "view-sticker-list": {
+                    templateUrl: "static/templates/stickers.html",
+                    controller: 'StickerListCtrl'
+                }
+            }
+        })
+});
 
-  		 	$scope.orderProp = '!created';
- 		}
- 	]
- );
 
-//superTodo.controller('StickersListCtrl', function($scope){
-//	$scope.stickers = [
+
+
+
+//var superTodo = angular.module('superTodo', ['ngRoute']);
+
+//Router
+//superTodo.config(['$routeProvider', function($routeProvider){
+//    $routeProvider
+//    .when('/', {
+//        templateUrl: 'static/templates/home.html',
+//        controller: 'HomeCtrl'
+//    })
+//    .when('/about', {
+//        templateUrl: 'static/templates/about.html',
+//        controller: 'AboutCtrl'
+//    })
+//    .when('/stickers', {
+//        templateUrl: 'static/templates/stickers.html',
+//        controller: 'StickerListCtrl'
+//    })
+////    .when('/folder/', {
+////        templateUrl: 'static/templates/folder-list.html',
+////        controller: 'FolderListCtrl'
+////    })
+//    .when('/folder/:id', {
+//        templateUrl: 'static/templates/folder-list.html',
+//        controller: 'FolderListCtrl'
+//    })
+//    .otherwise({
+//        redirectTo: '/'
+//    });
+//}]);
+
+
+////Home Controller
+//superTodo.controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+//    $http.get('static/data/folders.json').success(function(data) {
+//        console.log(data);
+//        $scope.folders = data;
+//    });
+////    $http.get('api/v1.0/stickers').success(function(data) {
+////        $scope.stickers = data.stickers;
+////    });
+//}]);
+//
+////About Controller
+//superTodo.controller('AboutCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+//    console.log($location.hash);
+//}]);
+//
+//Sticker List Controller
+app.controller('StickerListCtrl',['$scope', '$http', function($scope, $http) {
+    $http.get('static/data/stickers.json').success(function(data) {
+        $scope.stickers = data.stickers;
+    });
+    $scope.orderProp = '!created';
+
+//    $http.get('static/data/folders.json').success(function(data) {
+//        $scope.folders = data.folders;
+//    });
+}]);
+//
+//Folder List Controller
+app.controller('FolderListCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+    $http.get('static/data/folders.json').success(function(data) {
+        $scope.folders = data.folders;
+    });
+}]);
+
+//Folder Detail Controller
+app.controller('FolderDetailCtrl', ['$scope', '$http', '$location', '$stateParams', function($scope, $http, $location, $stateParams){
+    console.log($stateParams);
+    $scope.id = $stateParams.id;
+}]);
+
+
+
+
+//superTodo.controller('FoldersListCtrl', function($scope){
+//	$scope.folders = [
 //		{
-//			"title": "The first sticker",
-//			"memo": "Hello! If you can read me, then the developers do something :)",
-//			"created": "2015-11-03",
-//			"folder": "root"
+//            "id": 1,
+//			"name": "default",
+//			"user": "user"
 //		},
 //		{
-//			"title": "I`m a sticker number two!", //And you must to do!
-//			"memo": "Memo writes here",
-//			"created": "2015-11-01",
-//			"folder": "root"
+//            "id": 2,
+//			"name": "home",
+//			"user": "user"
 //		},
 //		{
-//			"title": "St#3",
-//			"memo": "If you wont make the fucking report, boss will cut your balls!!!",
-//			"created": "2015-11-02",
-//			"folder": "Work"
-//		},
-//		{
-//			"title": "Product list",
-//			"memo": "",
-//			"created": "2015-10-30",
-//			"folder": "Market"
-//		},
-//		{
-//			"title": "Must do",
-//			"memo": "",
-//			"created": "2015-10-01",
-//			"folder": "root"
+//            "id": 3,
+//			"name": "work",
+//			"user": "user"
 //		}
 //	]
-//
-//	$scope.orderProp = '!created';
 //});
-
-superTodo.controller('FoldersListCtrl', function($scope){
-	$scope.folders = [
-		{
-			"name": "root",
-			"user": "user"
-		},
-		{
-			"name": "Work",
-			"user": "user"
-		},
-		{
-			"name": "Market",
-			"user": "user"
-		}
-	]
-});
