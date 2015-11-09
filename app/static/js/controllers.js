@@ -43,18 +43,23 @@ app.config(function($stateProvider){
 
 //Sticker List Controller
 app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams', '$filter', function($scope, $http, $location, $stateParams, $filter) {
-    //console.log($location);
-    //console.log($stateParams);
-    //console.log($filter);
     $http.get('static/data/stickers.json').success(function(data) {
         $scope.stickers = $filter('filter')(data.stickers, {folder: $stateParams.id});
+        $http.get('static/data/tasks.json').success(function(data) {
+            angular.forEach($scope.stickers, function(item){
+                item.tasks = $filter('filter')(data.tasks, {sticker: item.id});
+            });
+        });
     });
     $scope.orderProp = '!created';
+
+    $scope.changeStatus = function(){
+        console.log($scope.stickers);
+    };
 }]);
 
 //Folder List Controller
 app.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams', function($scope, $http, $location, $stateParams){
-    //console.log($stateParams);
     $http.get('static/data/folders.json').success(function(data) {
         $scope.folders = data.folders;
     });
@@ -62,6 +67,5 @@ app.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams'
 
 //Folder Detail Controller
 app.controller('FolderDetailCtrl', ['$scope', '$http', '$location', '$stateParams', function($scope, $http, $location, $stateParams){
-    //console.log($stateParams);
     $scope.id = $stateParams.id;
 }]);

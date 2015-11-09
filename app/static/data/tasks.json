@@ -1,0 +1,64 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "text": "Do it",
+      "status": "false",
+      "sticker": "5"
+    },
+    {
+      "id": "2",
+      "text": "Do do do",
+      "status": "false",
+      "sticker": "5"
+    },
+    {
+      "id": "3",
+      "text": "Make script",
+      "status": "false",
+      "sticker": "5"
+    },
+    {
+      "id": "4",
+      "text": "Get some money",
+      "status": "true",
+      "sticker": "5"
+    },
+    {
+      "id": "5",
+      "text": "Do it mo times",
+      "status": "true",
+      "sticker": "5"
+    },
+    {
+      "id": "6",
+      "text": "Bread",
+      "status": "false",
+      "sticker": "4"
+    },
+    {
+      "id": "7",
+      "text": "Water",
+      "status": "false",
+      "sticker": "4"
+    },
+    {
+      "id": "8",
+      "text": "Djuice",
+      "status": "true",
+      "sticker": "4"
+    },
+    {
+      "id": "9",
+      "text": "Meat",
+      "status": "false",
+      "sticker": "4"
+    },
+    {
+      "id": "10",
+      "text": "Sugar",
+      "status": "true",
+      "sticker": "4"
+    }
+  ]
+}

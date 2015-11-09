@@ -55,6 +55,15 @@
 	min-height: @h;
 }
 
+html, body{
+  padding: 0;
+  margin: 0;
+}
+
+li{
+  list-style-type: none;
+}
+
 //base.html====================================================================
 .stickers{
 	li.sticker{
@@ -111,6 +120,16 @@
 	}
 	.tasks{
 	  .font_h5;
+	  padding: 0;
+	  margin: 0;
+	  li{
+		padding: 0;
+		margin: 0;
+		.done-true{
+		  text-decoration: line-through;
+		  color: @color_gray_light;
+		}
+	  }
 	}
   }
   .footer{
