@@ -1,0 +1,35 @@
+<p><a href="/newsticker">Add new sticker</a></p>
+
+Search: <input ng-model="query">
+Sort by:
+<select ng-model="orderProp">
+  <option value="title">Alphabetical</option>
+  <option value="created">Newest</option>
+</select>
+
+<ul class="stickers">
+    <li class="sticker" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
+        <div class="header">
+            <span class="title">
+                {{sticker.title}}
+            </span>
+            <span class="buttons">
+                <i class="fa fa-clock-o"></i>
+                <i class="fa fa-cog"></i>
+                <i class="fa fa-close"></i>
+            </span>
+        </div>
+        <div class="body">
+            <p class="memo">{{sticker.memo}}</p>
+            <ul class="tasks"></ul>
+        </div>
+        <div class="footer">
+            <span class="date">
+                {{sticker.created}}
+            </span>
+            <span class="buttons">
+                <a class="btn btn-link" href="#/sticker/{{sticker.id}}"><i class="fa fa-arrows-alt"></i></a>
+            </span>
+        </div>
+    </li>
+</ul>

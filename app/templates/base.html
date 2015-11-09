@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="superTodo">
+<html lang="en" ng-app="app">
 <head>
     <meta charset="utf-8">
     <title>SUPER TODO - TA-DAM!!!</title>
@@ -9,6 +9,10 @@
 
     <!-- Angular -->
     <script type="text/javascript" src="static/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="static/lib/angular/angular-resource.min.js"></script>
+{#    <script type="text/javascript" src="static/lib/angular/angular-route.min.js"></script>#}
+    <script type="text/javascript" src="static/lib/angular/angular-ui-router.min.js"></script>
+{#    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-route-segment/1.4.0/angular-route-segment.min.js"></script>#}
     <script type="text/javascript" src="static/js/controllers.js"></script>
 
     <!-- Bootstrap -->
@@ -34,34 +38,13 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-3" ng-controller="FoldersListCtrl">
-				<ul class="folders">
-					<li ng-repeat="folder in folders">
-						<p>{{folder.name|angular}}</p>
-					</li>
-				</ul>
-			</div>
-			<div class="col-md-9" ng-controller="StickersListCtrl">
-				<p><a href="/newsticker">Add new sticker</a></p>
-				<!-- {% block content %}
-				{% endblock %} -->
+        <div class="col-md-3">
+            <div ui-view="view-folder-list"></div>
+        </div>
 
-				Search: <input ng-model="query">
-				Sort by:
-		        <select ng-model="orderProp">
-		          <option value="title">Alphabetical</option>
-		          <option value="created">Newest</option>
-		        </select>
-
-				<ul class="stickers">
-					<li class="sticker" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
-						{% include "sticker.html" %}
-					</li>
-				</ul>
-
-			</div>
-		</div>
+        <div class="col-md-9">
+            <div ui-view="view-sticker-list"></div>
+        </div>
 
 		<div class="row">
 			<div class="col-md-12">
