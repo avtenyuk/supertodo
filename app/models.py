@@ -1,3 +1,6 @@
+import json
+import datetime
+
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 
@@ -23,8 +26,9 @@ class Folder(db.Model):
         return self.name
 
     def as_json(self):
-
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 
 
 class Sticker(db.Model):
@@ -38,14 +42,17 @@ class Sticker(db.Model):
     def __init__(self, title, memo, folder_id):
         self.title = title
         self.memo = memo
-        self.created = func.now()
+        # self.created = func.now()
+        self.created = datetime.datetime.now()
         self.folder_id = folder_id
 
     def __str__(self):
         return self.title
 
     def as_json(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data['created'] = self.created.isoformat()
+        return data
 
 
 class Task(db.Model):
