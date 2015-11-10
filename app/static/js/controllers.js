@@ -43,11 +43,19 @@ app.config(function($stateProvider){
 
 //Sticker List Controller
 app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams', '$filter', function($scope, $http, $location, $stateParams, $filter) {
+    var tasksList = this;
     $http.get('static/data/stickers.json').success(function(data) {
         $scope.stickers = $filter('filter')(data.stickers, {folder: $stateParams.id});
         $http.get('static/data/tasks.json').success(function(data) {
             angular.forEach($scope.stickers, function(item){
                 item.tasks = $filter('filter')(data.tasks, {sticker: item.id});
+                item.getTotalTasks = function(){
+                    return item.tasks.length;
+                };
+                item.addTask = function(){
+                    item.tasks.push({text: item.formTaskText, status: "false", id: item.id});
+                    item.formTaskText = '';
+                };
             });
         });
     });
