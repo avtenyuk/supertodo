@@ -20,19 +20,23 @@ Sort by:
             </span>
         </div>
         <div class="body">
+
             <p class="memo">{{ sticker.memo }}</p>
+            <span>Total: {{ sticker.getTotalTasks() }}</span>
+            <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span>
+
             <ul class="tasks">
-                <li ng-repeat="task in sticker.tasks">
-                    <input type="checkbox" ng-model="task.status" ng-click="changeStatus()">
-                    <span class="done-{{ task.status }}" ng-click="changeStatus()">{{ task.text }}</span>
-                </li>
-                <li>
-                    <span>
-                        <input type="text">
-                        <i class="fa fa-plus"></i>
-                    </span>
+                <li ng-repeat="task in sticker.tasks" ng-click="sticker.changeStatus($event, task)">
+                    <!--input type="checkbox" ng-model="task.status"-->
+                    <span class="done-{{ task.status }}">{{ task.text }}</span> {{ task.status }}
                 </li>
             </ul>
+
+            <form class="form-horizontal">
+                <input type="text" ng-model="sticker.formTaskText" ng-model-instant>
+                <button class="btn btn-link" ng-click="sticker.addTask()"><i class="fa fa-plus"></i></button>
+            </form>
+
         </div>
         <div class="footer">
             <span class="date">
