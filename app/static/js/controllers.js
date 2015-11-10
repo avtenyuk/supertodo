@@ -63,13 +63,17 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
                 };
                 sticker.toggleEndedTasks = function(){
                     if(sticker.toggleStatus) {
-                        sticker.toggleStatus = false
+                        sticker.toggleStatus = false;
                         sticker.tasks = $filter('filter')(sticker.tasks, {status: sticker.toggleStatus});
                     }else{
                         sticker.toggleStatus = true;
                         sticker.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
                     }
                 };
+                sticker.changeStatus = function(event, task){
+                    console.log(event.currentTarget, task);
+                    console.log("PUT query to change task`s state");
+                }
             });
         });
     });
