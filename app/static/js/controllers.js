@@ -47,14 +47,28 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
     $http.get('static/data/stickers.json').success(function(data) {
         $scope.stickers = $filter('filter')(data.stickers, {folder: $stateParams.id});
         $http.get('static/data/tasks.json').success(function(data) {
-            angular.forEach($scope.stickers, function(item){
-                item.tasks = $filter('filter')(data.tasks, {sticker: item.id});
-                item.getTotalTasks = function(){
-                    return item.tasks.length;
+            angular.forEach($scope.stickers, function(sticker){
+                sticker.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
+                sticker.toggleStatus = true;
+                sticker.getTotalTasks = function(){
+                    return sticker.tasks.length;
                 };
-                item.addTask = function(){
-                    item.tasks.push({text: item.formTaskText, status: "false", id: item.id});
-                    item.formTaskText = '';
+                sticker.addTask = function(){
+                    sticker.tasks.push({text: sticker.formTaskText, status: "false", id: sticker.id});
+                    sticker.formTaskText = '';
+                };
+                sticker.getToggleStatus = function(){
+                    if(sticker.toggleStatus){return {status: "on", title: "Hide"};}
+                    else{return {status: "off", title: "Show"};}
+                };
+                sticker.toggleEndedTasks = function(){
+                    if(sticker.toggleStatus) {
+                        sticker.toggleStatus = false
+                        sticker.tasks = $filter('filter')(sticker.tasks, {status: sticker.toggleStatus});
+                    }else{
+                        sticker.toggleStatus = true;
+                        sticker.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
+                    }
                 };
             });
         });

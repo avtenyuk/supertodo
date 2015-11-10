@@ -21,7 +21,8 @@ Sort by:
         </div>
         <div class="body">
             <p class="memo">{{ sticker.memo }}</p>
-            Total: {{ sticker.getTotalTasks() }}
+            <span>Total: {{ sticker.getTotalTasks() }}</span>
+            <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span>
             <ul class="tasks">
                 <li ng-repeat="task in sticker.tasks">
                     <input type="checkbox" ng-model="task.status">
