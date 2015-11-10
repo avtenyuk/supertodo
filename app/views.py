@@ -1,12 +1,71 @@
-import timeit
-import json
-
-from flask import render_template, redirect, flash, jsonify, abort, make_response, request
+import re
 
 
-from app import app, db
+from flask import render_template, redirect, flash, jsonify, make_response, request
+from flask_restful import Resource, abort, reqparse
+
+from app import app, db, api
 from forms import StickerForm
 from models import Sticker, Folder, Task
+
+# Start API
+@app.errorhandler(404)
+def not_found(error):
+    '''
+    :param error:
+    :return: page with status 404
+    '''
+    return make_response(jsonify({'error': 'Not found', 'status':404}), 404)
+
+
+def sticker_not_exist(sticker_id):
+    sticker = Sticker.query.filter_by(id=sticker_id).first()
+    if sticker:
+        return sticker
+    else:
+        return abort(404, message='This scticker does not exist', status=404)
+
+
+class StickerApi(Resource):
+    def get(self):
+        stickers = [x.as_json() for x in Sticker.query.all()]
+        return {'stickers': stickers}, 200
+
+    def post(self):
+        new_sticker = Sticker(**request.json)
+        db.session.add(new_sticker)
+        db.session.commit()
+        return {'sticker': new_sticker.as_json()}, 201
+
+api.add_resource(StickerApi, '/api/sticker')
+
+
+class OneStickerApi(Resource):
+
+    def get(self, sticker_id):
+        sticker = sticker_not_exist(sticker_id)
+        return {'sticker': sticker.as_json()}
+
+    def delete(self, sticker_id):
+        sticker = sticker_not_exist(sticker_id)
+        db.session.query(Sticker).filter_by(id=sticker.id).delete()
+        db.session.commit()
+        return '', 204
+
+    def put(self, sticker_id):
+        sticker = sticker_not_exist(sticker_id)
+        updated_sticker = db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
+        db.session.commit()
+        print 'args - ', request.json
+        return {'sticker': sticker.as_json()}, 201
+
+
+api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')
+
+#
+
+# End API
+
 
 
 def get_or_create(model, **kwargs):
@@ -19,59 +78,6 @@ def get_or_create(model, **kwargs):
         session.add(instance)
         session.commit()
         return instance
-
-
-# Start API
-
-@app.route('/api/v1.0/stickers', methods=['GET'])
-def stickers_api():
-    '''
-    :return: all stickers from database
-    '''
-    start_timer = timeit.default_timer()
-    stickers = Sticker.query.all()
-    json_stickers = [x.as_json() for x in stickers]
-    stop_timer = timeit.default_timer()
-    timer = stop_timer - start_timer
-    return jsonify({'status':200, 'time': timer, 'stickers': json_stickers})
-
-
-@app.route('/api/v1.0/stickers/<int:sticker_id>', methods=['GET'])
-def get_sticker(sticker_id):
-    '''
-    :param sticker_id:
-    :return: one sticker as json
-    '''
-    sticker = Sticker.query.get(sticker_id)
-    if not sticker:
-        abort(404)
-    return jsonify({'sticker': sticker.as_json()})
-
-
-@app.route('/api/v1.0/stickers', methods=['POST'])
-def create_sticker():
-    if not request.json:
-        abort(404)
-    sticker = Sticker(**request.json)
-    db.session.add(sticker)
-    db.session.commit()
-
-    return jsonify({'status': 201})
-
-
-@app.errorhandler(404)
-def not_found(error):
-    '''
-    :param error:
-    :return: page with status 404
-    '''
-    return make_response(jsonify({'error': 'Not found', 'status':404}), 404)
-
-# End API
-
-
-
-
 
 @app.route('/')
 def index():
