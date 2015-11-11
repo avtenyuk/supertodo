@@ -134,16 +134,17 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
                     //});
                     //Sticker.update({id: sticker.id, title: sticker.title});
                 };
-                sticker.deleteTask = function(event, task){
-                    Task.delete({id: task.id}, function(data){
-                        sticker.tasks.pop();
+                sticker.deleteTask = function(index){
+                    Task.delete({id: sticker.tasks[index].id}, function(data){
+                        sticker.tasks.splice(index, 1);
                     });
                 };
-                //sticker.deleteSticker = function(event, sticker){
-                //    Sticker.delete({id: sticker.id}, function(data){
-                //        sticker.remove
-                //    });
-                //}
+                sticker.deleteSticker = function(index){
+                    console.log(sticker.id);
+                    Sticker.delete({id: sticker.id}, function(data){
+                        $scope.stickers.splice(index, 1);
+                    });
+                }
             });
         });
     });
