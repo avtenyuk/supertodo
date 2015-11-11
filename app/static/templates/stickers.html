@@ -16,7 +16,7 @@ Sort by:
             <span class="buttons">
                 <i class="fa fa-clock-o"></i>
                 <i class="fa fa-cog"></i>
-                <i class="fa fa-close"></i>
+                <i class="fa fa-close" ng-click="sticker.deleteSticker($event, sticker)"></i>
             </span>
         </div>
         <div class="body">
@@ -26,9 +26,10 @@ Sort by:
             <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span>
 
             <ul class="tasks">
-                <li ng-repeat="task in sticker.tasks" ng-click="sticker.changeStatus($event, task)">
+                <li ng-repeat="task in sticker.tasks">
                     <!--input type="checkbox" ng-model="task.status"-->
-                    <span class="done-{{ task.status }}">{{ task.text }}</span>
+                    <span class="done-{{ task.status }}" ng-click="sticker.changeStatus($event, task)">{{ task.text }}</span>
+                    <i class="fa fa-close" ng-click="sticker.deleteTask($event, task)"></i>
                 </li>
             </ul>
 
