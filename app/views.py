@@ -141,7 +141,7 @@ class OneTaskApi(Resource):
 
     def put(self, task_id):
         task = task_not_exist(task_id)
-        db.session.query(Task).filter(Task.id == task.id).update(**request.json)
+        db.session.query(Task).filter(Task.id == task.id).update(request.json)
         db.session.commit()
         return {'task': task.as_json()}, 201
 
@@ -184,7 +184,7 @@ class OneFolderApi(Resource):
 
     def put(self, folder_id):
         folder = folder_not_exist(folder_id)
-        db.session.query(Folder).filter(Folder.id == folder.id).update(**request.json)
+        db.session.query(Folder).filter(Folder.id == folder.id).update(request.json)
         db.session.commit()
         return {'folder': folder.as_json()}, 201
 
