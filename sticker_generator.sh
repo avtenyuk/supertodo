@@ -15,3 +15,4 @@ done
 
 # curl -X "DELETE" http://127.0.0.1:5000/api/sticker/10265
 # curl -i -H "Content-Type: application/json" -X POST -d '{"status": false, "text":"to fo something", "sticker_id": 10280}' http://127.0.0.1:5000/api/task
+# curl -i -H "Content-Type: application/json" -X PUT -d '{"status": "true"}' http://127.0.0.1:5000/api/task/10

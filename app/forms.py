@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField
+from wtforms import TextField, BooleanField, PasswordField
 from wtforms.validators import Required
 
 
@@ -10,5 +10,11 @@ class StickerForm(Form):
     task = TextField('task', validators=[Required()])
     status = BooleanField('status', default=False)
 
+
+
+class LoginForm(Form):
+    username = TextField('openid', validators = [Required()])
+    password = PasswordField('password', validators=[Required()])
+    remember_me = BooleanField('remember_me', default = False)
 
 

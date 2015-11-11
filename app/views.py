@@ -1,14 +1,57 @@
-import re
 
-
-from flask import render_template, redirect, flash, jsonify, make_response, request
+from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, g, session, escape
 from flask_restful import Resource, abort
+from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, \
+                            confirm_login, fresh_login_required
 
 from app import app, db, api
-from forms import StickerForm
-from models import Sticker, Folder, Task
+from forms import StickerForm, LoginForm
+from models import Sticker, Folder, Task, User
 
-# start global functions
+
+
+
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.login_message = u"Please log in to access this page."
+login_manager.refresh_view = "reauth"
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+login_manager.setup_app(app)
+
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/secret")
+@fresh_login_required
+def secret():
+    return 'ok'
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST" and "username" in request.form:
+        username = request.form["username"]
+        if username == 'max':
+            remember = request.form.get("remember", "no") == "yes"
+            if login_user('max', remember=remember):
+                flash("Logged in!")
+                return redirect(request.args.get("next") or url_for("index"))
+            else:
+                flash("Sorry, but you could not log in.")
+        else:
+            flash(u"Invalid username.")
+    return render_template("login.html", form = LoginForm())
+
+
+
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -98,7 +141,7 @@ class OneTaskApi(Resource):
 
     def put(self, task_id):
         task = task_not_exist(task_id)
-        db.session.quert(Task).filter(Task.id == task.id).update(**request.json)
+        db.session.query(Task).filter(Task.id == task.id).update(request.json)
         db.session.commit()
         return {'task': task.as_json()}, 201
 
@@ -141,7 +184,7 @@ class OneFolderApi(Resource):
 
     def put(self, folder_id):
         folder = folder_not_exist(folder_id)
-        db.session.query(Folder).filter(Folder.id == folder.id).update(**request.json)
+        db.session.query(Folder).filter(Folder.id == folder.id).update(request.json)
         db.session.commit()
         return {'folder': folder.as_json()}, 201
 
@@ -154,75 +197,3 @@ class OneFolderApi(Resource):
 api.add_resource(OneFolderApi, '/api/folder/<folder_id>')
 
 # End Folder Api
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def get_or_create(model, **kwargs):
-    session = db.session
-    instance = session.query(model).filter_by(kwargs).first()
-    if instance:
-        return instance
-    else:
-        instance = model(**kwargs)
-        session.add(instance)
-        session.commit()
-        return instance
-
-
-@app.route('/')
-def index():
-    stickers = db.session.query(Sticker).filter_by(title='a1')
-    return render_template('index.html', message=None, title='Home', stickers=stickers)
-
-
-@app.route('/newsticker', methods= ['GET', 'POST'])
-def new_ticker():
-    stickers = db.session.query(Sticker).all()
-    form = StickerForm()
-    title_page = 'Add new sticker'
-    if form.validate_on_submit():
-        fd = get_or_create(Folder, name=form.folder.data)
-        st = get_or_create(Sticker, title=form.title.data, memo=form.text.data, folder_id=fd.id)
-        tk = Task(text=form.task.data, status=form.status.data, sticker_id=st.id)
-        db.session.add(tk)
-        db.session.commit()
-        flash(' Success! ')
-        return redirect('/newsticker')
-    return render_template('newsticker.html', form=form, title = title_page, stickers=stickers)
-
-# it will be off, because we are use api's 404 function
-# @app.errorhandler(404)
-# def not_found_error(error):
-#     return render_template('404.html'), 404
-
-@app.route('/newsticker/delete/<int:id>')
-def delete_sticker(id):
-    sticker = Sticker.query.get(id)
-    if sticker == None:
-        flash('Sticker not found')
-        return redirect('/newsticker')
-    db.session.delete(sticker)
-    db.session.commit()
-    flash('Sticker number {} has been deleted'.format(id))
-    return redirect('/newsticker')
