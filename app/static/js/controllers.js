@@ -133,7 +133,17 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
                     //    task_obj.$update({status: task.status});
                     //});
                     //Sticker.update({id: sticker.id, title: sticker.title});
-                }
+                };
+                sticker.deleteTask = function(event, task){
+                    Task.delete({id: task.id}, function(data){
+                        sticker.tasks.pop();
+                    });
+                };
+                //sticker.deleteSticker = function(event, sticker){
+                //    Sticker.delete({id: sticker.id}, function(data){
+                //        sticker.remove
+                //    });
+                //}
             });
         });
     });
