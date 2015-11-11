@@ -28,7 +28,7 @@ Sort by:
             <ul class="tasks">
                 <li ng-repeat="task in sticker.tasks" ng-click="sticker.changeStatus($event, task)">
                     <!--input type="checkbox" ng-model="task.status"-->
-                    <span class="done-{{ task.status }}">{{ task.text }}</span> {{ task.status }}
+                    <span class="done-{{ task.status }}">{{ task.text }}</span>
                 </li>
             </ul>
 
@@ -40,7 +40,7 @@ Sort by:
         </div>
         <div class="footer">
             <span class="date">
-                {{ sticker.created }}
+                {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
             </span>
             <span class="buttons">
                 <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>

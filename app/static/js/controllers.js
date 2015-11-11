@@ -44,18 +44,27 @@ app.config(function($stateProvider){
 //Sticker List Controller
 app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams', '$filter', function($scope, $http, $location, $stateParams, $filter) {
     var tasksList = this;
-    $http.get('static/data/stickers.json').success(function(data) {
-        $scope.stickers = $filter('filter')(data.stickers, {folder: $stateParams.id});
-        $http.get('static/data/tasks.json').success(function(data) {
+    //$http.get('static/data/stickers.json').success(function(data) {
+    $http.get('/api/sticker').success(function(data) {
+        $scope.stickers = $filter('filter')(data.stickers, {folder_id: $stateParams.id});
+        //$http.get('static/data/tasks.json').success(function(data) {
+        $http.get('api/task').success(function(data) {
             angular.forEach($scope.stickers, function(sticker){
-                sticker.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
+                sticker.tasks = $filter('filter')(data.tasks, {sticker_id: sticker.id});
                 sticker.toggleStatus = true;
                 sticker.getTotalTasks = function(){
                     return sticker.tasks.length;
                 };
                 sticker.addTask = function(){
                     sticker.tasks.push({text: sticker.formTaskText, status: "false", id: sticker.id});
-                    sticker.formTaskText = '';
+                    $http.post('api/task', {
+                        sticker_id: sticker.id,
+                        text: sticker.formTaskText,
+                        status: false
+                    }).success(function(data){
+                        sticker.formTaskText = '';
+                        console.log('ok');
+                    });
                 };
                 sticker.getToggleStatus = function(){
                     if(sticker.toggleStatus){return {status: "on", title: "Hide"};}
@@ -71,8 +80,7 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
                     }
                 };
                 sticker.changeStatus = function(event, task){
-                    console.log(event.currentTarget, task);
-                    console.log("PUT query to change task`s state");
+                    task.status = task.status == "true" ? "false" : "true";
                 }
             });
         });
