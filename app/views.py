@@ -2,55 +2,76 @@
 from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, g, session, escape
 from flask_restful import Resource, abort
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, \
-                            confirm_login, fresh_login_required
+                            fresh_login_required, AnonymousUserMixin
 
 from app import app, db, api
-from forms import StickerForm, LoginForm
+from forms import LoginForm
 from models import Sticker, Folder, Task, User
 
+
+class Anonymous(AnonymousUserMixin):
+    name = u"Anonymous"
 
 
 
 login_manager = LoginManager()
+login_manager.anonymous_user = Anonymous
 login_manager.login_view = "login"
 login_manager.login_message = u"Please log in to access this page."
 login_manager.refresh_view = "reauth"
+login_manager.setup_app(app)
+
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
-login_manager.setup_app(app)
-
 
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
 
+
 @app.route("/secret")
-@fresh_login_required
+@login_required
 def secret():
+    session.clear()
     return 'ok'
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST" and "username" in request.form:
+    if 'user_id' in session:
+        print 'redirect'
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if request.method == "POST" and "username" in request.form and form.validate_on_submit():
         username = request.form["username"]
-        if username == 'max':
-            remember = request.form.get("remember", "no") == "yes"
-            if login_user('max', remember=remember):
-                flash("Logged in!")
-                return redirect(request.args.get("next") or url_for("index"))
-            else:
-                flash("Sorry, but you could not log in.")
+        password = request.form["password"]
+        user = User.query.filter_by(nickname=username, password=password).first()
+        if not user:
+            flash("User does not exist or your password is bad. Try again")
+            return redirect('/login')
+        user.active = True
+        db.session.commit()
+        remember = request.form.get("remember", "no") == "yes"
+        if login_user(user, remember=remember):
+            flash("Logged in!")
+            return redirect(url_for("secret"))
         else:
-            flash(u"Invalid username.")
-    return render_template("login.html", form = LoginForm())
+            flash("Sorry, but you could not log in.")
+    return render_template("login.html", form = form)
 
 
-
+@app.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    logout_user()
+    flash("Logged out.")
+    return redirect(url_for("index"))
 
 
 @app.errorhandler(404)
@@ -66,6 +87,7 @@ def not_found(error):
 # Start Sticker Api
 
 class StickerApi(Resource):
+
     def get(self):
         stickers = [x.as_json() for x in Sticker.query.all()]
         return {'stickers': stickers}, 200
