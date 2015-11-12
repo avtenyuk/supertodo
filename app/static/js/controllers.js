@@ -108,6 +108,12 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
             });
         };
 
+        $scope.deleteSticker = function(sticker, index){
+            Sticker.delete({id: sticker.id}, function(data){
+                $scope.stickers.splice(index, 1);
+            });
+        };
+
         // Tasks
         Task.get({}, function(data){
             angular.forEach($scope.stickers, function(sticker){
@@ -153,13 +159,6 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
                         sticker.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
                     }
                 };
-
-                sticker.deleteSticker = function(index){
-                    console.log(sticker.id);
-                    Sticker.delete({id: sticker.id}, function(data){
-                        $scope.stickers.splice(index, 1);
-                    });
-                }
 
             });
         });
