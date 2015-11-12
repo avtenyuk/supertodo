@@ -3,6 +3,7 @@ import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
+from flask.ext.login import UserMixin
 
 from app import db
 
@@ -14,10 +15,24 @@ def session_commit():
         print str(e)
 
 
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key = True)
+    nickname = db.Column(db.String(64), index = True, unique = True)
+    email = db.Column(db.String(120), index = True, unique = True)
+    password = db.Column(db.String(120))
+    active = db.Column(db.Boolean, default=False)
+    folders = db.relationship('Folder', backref='user')
+
+    def __str__(self):
+        return self.nickname
+
+
 class Folder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), index=True)
     stickers = db.relationship('Sticker', backref='folder')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __init__(self, name):
         self.name = name
@@ -72,12 +87,3 @@ class Task(db.Model):
     def as_json(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    nickname = db.Column(db.String(64), index = True, unique = True)
-    email = db.Column(db.String(120), index = True, unique = True)
-    password = db.Column(db.String())
-
-    def __str__(self):
-        return self.nickname
