@@ -96,23 +96,50 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
     function($scope, $http, $location, $stateParams, $filter, Task, Sticker) {
     Sticker.get({}, function(data){
         $scope.stickers = $filter('filter')(data.stickers, {folder_id: $stateParams.id});
+
+        // Stickers
+        $scope.orderProp = '!created';
+
+        $scope.addSticker = function(data){
+            var new_obj = {title: "", memo: "", folder_id: $stateParams.id ? $stateParams.id : 1};
+            Sticker.save(new_obj, function(data){
+                new_obj.id = data.sticker.id;
+                $scope.stickers.push(new_obj);
+            });
+        };
+
+        // Tasks
         Task.get({}, function(data){
             angular.forEach($scope.stickers, function(sticker){
                 sticker.tasks = $filter('filter')(data.tasks, {sticker_id: sticker.id});
                 sticker.toggleStatus = true;
+
                 sticker.getTotalTasks = function(){
                     return sticker.tasks.length;
                 };
+
                 sticker.addTask = function(){
-                    sticker.tasks.push({text: sticker.formTaskText, status: "false", id: sticker.id});
-                    Task.save({
-                        sticker_id: sticker.id,
-                        text: sticker.formTaskText,
-                        status: false
-                    }, function(data){
+                    var new_obj = {text: sticker.formTaskText, status: "false", sticker_id: sticker.id};
+                    Task.save(new_obj, function(data){
+                        new_obj.id = data.task.id;
+                        sticker.tasks.push(new_obj);
                         sticker.formTaskText = '';
                     });
                 };
+
+                sticker.deleteTask = function(index){
+                    console.log(sticker.tasks[index]);
+                    Task.delete({id: sticker.tasks[index].id}, function(data){
+                        sticker.tasks.splice(index, 1);
+                    });
+                };
+
+                sticker.changeStatus = function(event, task){  // Change task status
+                    task.status = task.status == "true" ? "false" : "true";
+                    Task.update({id: task.id, status: task.status});
+                };
+
+                // Hide / Show ended tasks
                 sticker.getToggleStatus = function(){
                     if(sticker.toggleStatus){return {status: "on", title: "Hide"};}
                     else{return {status: "off", title: "Show"};}
@@ -126,40 +153,53 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
                         sticker.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
                     }
                 };
-                sticker.changeStatus = function(event, task){
-                    task.status = task.status == "true" ? "false" : "true";
-                    Task.update({id: task.id, status: task.status});
-                    //var task_obj = Task.get({id: task.id}, function(data){
-                    //    task_obj.$update({status: task.status});
-                    //});
-                    //Sticker.update({id: sticker.id, title: sticker.title});
-                };
-                sticker.deleteTask = function(index){
-                    Task.delete({id: sticker.tasks[index].id}, function(data){
-                        sticker.tasks.splice(index, 1);
-                    });
-                };
+
                 sticker.deleteSticker = function(index){
                     console.log(sticker.id);
                     Sticker.delete({id: sticker.id}, function(data){
                         $scope.stickers.splice(index, 1);
                     });
                 }
+
             });
         });
-    });
-    $scope.orderProp = '!created';
 
-    $scope.changeStatus = function(){
-        console.log($scope.stickers);
-    };
+    });
+
+    //$scope.changeStatus = function(){
+    //    console.log($scope.stickers);
+    //};
 }]);
+
+////Task List Controller
+//app.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateParams', 'Task',
+//    function($scope, $http, $location, $stateParams, Task){
+//    Task.get({}, function(data){
+//        $scope.tasks = data.tasks;
+//        console.log(data);
+//    });
+//}]);
 
 //Folder List Controller
 app.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams', 'Folder',
     function($scope, $http, $location, $stateParams, Folder){
     Folder.get({}, function(data){
         $scope.folders = data.folders;
+
+        $scope.addFolder = function(data){
+            var new_obj = {name: $scope.folderName};
+            Folder.save(new_obj, function(data){
+                new_obj.id = data.folder.id;
+                $scope.folders.push(new_obj);
+            });
+        };
+
+        $scope.deleteFolder = function(folder, index){
+            Folder.delete({id: folder.id}, function(data){
+                $scope.folders.splice(index, 1);
+            });
+        }
+
     });
 }]);
 
