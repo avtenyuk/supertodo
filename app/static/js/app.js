@@ -16,7 +16,8 @@ var app = angular.module('app', [
     'HashBangURLs',
     'ngResource',
     'controllers',
-    'services'
+    'services',
+    'ngLoadingSpinner'
 ]);
 
 
