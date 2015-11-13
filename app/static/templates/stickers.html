@@ -11,7 +11,7 @@ Sort by:
 
 <ul class="stickers">
 
-    <li class="sticker" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
+    <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
         <div class="header">
             <span class="title">
@@ -30,13 +30,15 @@ Sort by:
             <span>Total: {{ sticker.getTotalTasks() }}</span>
             <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span>
 
-            <ul class="tasks">
+            <div ng-controller="TaskListCtrl">
+                <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
+            </div>
+            <!--ul class="tasks">
                 <li ng-repeat="task in sticker.tasks">
-                    <!--input type="checkbox" ng-model="task.status"-->
                     <span class="done-{{ task.status }}" ng-click="sticker.changeStatus($event, task)">{{ task.text }}</span>
                     <button class="btn btn-link btn-xs" ng-click="sticker.deleteTask($index)"><i class="fa fa-close"></i></button>
                 </li>
-            </ul>
+            </ul-->
 
             <form class="form-horizontal">
                 <input type="text" ng-model="sticker.formTaskText" ng-model-instant>

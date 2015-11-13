@@ -1,6 +1,6 @@
 <ul class="folders">
     <!--li><a href="#!/">ALL</a></li-->
-    <li><a sref="index">ALL</a></li>
+    <li><a ui-sref="index">ALL</a></li>
     <li ng-repeat="folder in folders">
         <!--a href="#!/folder/{{folder.id}}">{{folder.name}}</a-->
         <a ui-sref="folder({id:folder.id})">{{folder.name}}</a>

@@ -10,12 +10,15 @@
     <!-- Angular -->
     <script type="text/javascript" src="static/lib/angular/angular.min.js"></script>
     <script type="text/javascript" src="static/lib/angular/angular-resource.min.js"></script>
-{#    <script type="text/javascript" src="static/lib/angular/angular-route.min.js"></script>#}
     <script type="text/javascript" src="static/lib/angular/angular-ui-router.min.js"></script>
-{#    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-route-segment/1.4.0/angular-route-segment.min.js"></script>#}
     <script type="text/javascript" src="static/js/app.js"></script>
     <script type="text/javascript" src="static/js/controllers.js"></script>
     <script type="text/javascript" src="static/js/services.js"></script>
+
+    <!-- Angular Loading Spiner -->
+    <script type="text/javascript" src="static/lib/angular/spin.min.js"></script>
+    <script type="text/javascript" src="static/lib/angular/angular-spinner.min.js"></script>
+    <script type="text/javascript" src="static/lib/angular/angular-loading-spinner.js"></script>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" type="text/css" href="static/lib/bootstrap/css/bootstrap.css">
@@ -27,7 +30,6 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css">
-    
 
 </head>
 <body>
@@ -45,6 +47,7 @@
         </div>
 
         <div class="col-md-9">
+            <div class="spinner" us-spinner></div>
             <div ui-view="view-sticker-list"></div>
         </div>
 
