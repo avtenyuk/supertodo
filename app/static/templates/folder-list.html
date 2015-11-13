@@ -1,4 +1,14 @@
 <ul class="folders">
-    <li><a href="#!/">ALL</a></li>
-    <li ng-repeat="folder in folders"><a href="#!/folder/{{folder.id}}">{{folder.name}}</a></li>
+    <!--li><a href="#!/">ALL</a></li-->
+    <li><a sref="index">ALL</a></li>
+    <li ng-repeat="folder in folders">
+        <!--a href="#!/folder/{{folder.id}}">{{folder.name}}</a-->
+        <a ui-sref="folder({id:folder.id})">{{folder.name}}</a>
+        <button class="btn btn-link btn-xs" ng-click="deleteFolder(folder, $index)"><i class="fa fa-remove"></i></button>
+    </li>
 </ul>
+
+<form class="form-horizontal">
+    <input type="text" ng-model="folderName" ng-model-instant>
+    <button class="btn btn-link btn-xs" ng-click="addFolder()"><i class="fa fa-plus"></i></button>
+</form>

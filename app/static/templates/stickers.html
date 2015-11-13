@@ -7,18 +7,23 @@ Sort by:
   <option value="created">Newest</option>
 </select>
 
+<button class="btn btn-default" ng-click="addSticker()"><i class="fa fa-plus"> New sticker</i></button>
+
 <ul class="stickers">
+
     <li class="sticker" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
+
         <div class="header">
             <span class="title">
                 {{ sticker.title }}
             </span>
             <span class="buttons">
-                <i class="fa fa-clock-o"></i>
-                <i class="fa fa-cog"></i>
-                <i class="fa fa-close" ng-click="sticker.deleteSticker($index)"></i>
+                <i role="button" class="fa fa-clock-o"></i>
+                <i role="button" class="fa fa-cog"></i>
+                <i role="button" class="fa fa-close" ng-click="deleteSticker(sticker, $index)"></i>
             </span>
         </div>
+
         <div class="body">
 
             <p class="memo">{{ sticker.memo }}</p>
@@ -29,16 +34,17 @@ Sort by:
                 <li ng-repeat="task in sticker.tasks">
                     <!--input type="checkbox" ng-model="task.status"-->
                     <span class="done-{{ task.status }}" ng-click="sticker.changeStatus($event, task)">{{ task.text }}</span>
-                    <i class="fa fa-close" ng-click="sticker.deleteTask($index)"></i>
+                    <button class="btn btn-link btn-xs" ng-click="sticker.deleteTask($index)"><i class="fa fa-close"></i></button>
                 </li>
             </ul>
 
             <form class="form-horizontal">
                 <input type="text" ng-model="sticker.formTaskText" ng-model-instant>
-                <button class="btn btn-link" ng-click="sticker.addTask()"><i class="fa fa-plus"></i></button>
+                <button class="btn btn-link btn-xs" ng-click="sticker.addTask()"><i class="fa fa-plus"></i></button>
             </form>
 
         </div>
+
         <div class="footer">
             <span class="date">
                 {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
@@ -47,5 +53,6 @@ Sort by:
                 <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
             </span>
         </div>
+
     </li>
 </ul>
