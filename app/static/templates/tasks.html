@@ -1,6 +1,7 @@
-TASKS:
-<ul>
+TASKS: {{ tasks }}
+<ul class="tasks">
     <li ng-repeat="task in tasks">
-        {{ task.text }}
+        <span class="done-{{ task.status }}" ng-click="sticker.changeStatus($event, task)">{{ task.text }}</span>
+        <button class="btn btn-link btn-xs" ng-click="sticker.deleteTask($index)"><i class="fa fa-close"></i></button>
     </li>
 </ul>
