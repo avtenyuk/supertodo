@@ -1,98 +1,9 @@
 'use strict';
 
-angular.module('HashBangURLs', []).config(['$locationProvider', function($location) {
-  $location.hashPrefix('!');
-}]);
-
-angular.module('HTML5ModeURLs', []).config(['$stateProvider', function($route) {
-  $route.html5Mode(true);
-}]);
-
-var app = angular.module('app', ['ui.router', 'HashBangURLs', 'ngResource']);
-
-app.factory('Task', ['$resource', function($resource){
-    return $resource(
-        'api/task/:id',
-        {
-            id: "@id",
-            text: "@text",
-            status: "@status",
-            sticker_id: "@sticker_id"
-        },
-        {
-            update: {
-                method: 'PUT',
-                params: {id: '@id', text: '@text', status: '@status', sticker_id: '@sticker_id'}
-                //params: {id: '@id'}
-            }
-        }
-    );
-}]);
-
-app.factory('Sticker', ['$resource', function($resource){
-    return $resource(
-        'api/sticker/:id',
-        {
-            id: "@id",
-            title: "@title",
-            memo: "@memo",
-            folder_id: "@folder_id"
-        },
-        {
-            update: {
-                method: 'PUT',
-                params: {id: '@id', title: '@title', memo: '@memo', folder_id: '@folder_id'}
-                //params: {id: '@id'}
-            }
-        }
-    );
-}]);
-
-app.factory('Folder', ['$resource', function($resource){
-    return $resource(
-        'api/folder/:id',
-        {
-            id: "@id",
-            name: "@name"
-        },
-        {}
-    );
-}]);
-
-
-app.config(function($stateProvider){
-    $stateProvider
-        .state('index', {
-            url: "/",
-            views: {
-                "view-folder-list": {
-                    templateUrl: "static/templates/folder-list.html",
-                    controller: 'FolderListCtrl'
-                },
-                "view-sticker-list": {
-                    templateUrl: "static/templates/stickers.html",
-                    controller: 'StickerListCtrl'
-                }
-            }
-        })
-        .state('folder', {
-            url: "/folder/:id",
-            views: {
-                "view-folder-list": {
-                    templateUrl: "static/templates/folder-list.html",
-                    controller: 'FolderListCtrl'
-                },
-                "view-sticker-list": {
-                    templateUrl: "static/templates/stickers.html",
-                    controller: 'StickerListCtrl'
-                }
-            }
-        })
-});
-
+var controllers = angular.module('controllers', []);
 
 //Sticker List Controller
-app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams', '$filter', 'Task', 'Sticker',
+controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams', '$filter', 'Task', 'Sticker',
     function($scope, $http, $location, $stateParams, $filter, Task, Sticker) {
     Sticker.get({}, function(data){
         $scope.stickers = $filter('filter')(data.stickers, {folder_id: $stateParams.id});
@@ -180,7 +91,7 @@ app.controller('StickerListCtrl',['$scope', '$http', '$location', '$stateParams'
 //}]);
 
 //Folder List Controller
-app.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams', 'Folder',
+controllers.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams', 'Folder',
     function($scope, $http, $location, $stateParams, Folder){
     Folder.get({}, function(data){
         $scope.folders = data.folders;
