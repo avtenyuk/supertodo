@@ -25,6 +25,17 @@ controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stat
             });
         };
 
+        //$scope.addTask = function(sticker){
+        //    var new_obj = {text: sticker.formTaskText, status: "false", sticker_id: sticker.id};
+        //    Task.save(new_obj, function(data){
+        //        new_obj.id = data.task.id;
+        //        //sticker.tasks.push(new_obj);
+        //        TasksRender.tasks.add(new_obj);
+        //        console.log(TasksRender.tasks);
+        //        sticker.formTaskText = '';
+        //    });
+        //};
+
         //$scope.getSticker = function(id){
         //    console.log(id);
         //    return 'static/templates/tasks.html';
@@ -93,47 +104,49 @@ controllers.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateP
         Task.get({}, function(data){
             $scope.tasks = $filter('filter')(data.tasks, {sticker_id: $scope.sticker.id});
             console.log($scope.tasks);
-            //$scope.toggleStatus = true;
-            //
-            //$scope.getTotalTasks = function(){
-            //    return $scope.tasks.length;
-            //};
-            //
-            //$scope.addTask = function(){
-            //    var new_obj = {text: sticker.formTaskText, status: "false", sticker_id: sticker.id};
-            //    Task.save(new_obj, function(data){
-            //        new_obj.id = data.task.id;
-            //        $scope.tasks.push(new_obj);
-            //        sticker.formTaskText = '';
-            //    });
-            //};
-            //
-            //$scope.deleteTask = function(index){
-            //    console.log($scope.tasks[index]);
-            //    Task.delete({id: $scope.tasks[index].id}, function(data){
-            //        $scope.tasks.splice(index, 1);
-            //    });
-            //};
-            //
-            //$scope.changeStatus = function(event, task){  // Change task status
-            //    task.status = task.status == "true" ? "false" : "true";
-            //    Task.update({id: task.id, status: task.status});
-            //};
-            //
-            //// Hide / Show ended tasks
-            //$scope.getToggleStatus = function(){
-            //    if($scope.toggleStatus){return {status: "on", title: "Hide"};}
-            //    else{return {status: "off", title: "Show"};}
-            //};
-            //$scope.toggleEndedTasks = function(){
-            //    if($scope.toggleStatus) {
-            //        $scope.toggleStatus = false;
-            //        $scope.tasks = $filter('filter')($scope.tasks, {status: sticker.toggleStatus});
-            //    }else{
-            //        $scope.toggleStatus = true;
-            //        $scope.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
-            //    }
-            //};
+            $scope.toggleStatus = true;
+
+            $scope.getTotalTasks = function(){
+                return $scope.tasks.length;
+            };
+
+            $scope.addTask = function(sticker){
+                console.log($scope);
+                var new_obj = {text: $scope.formTaskText, status: "false", sticker_id: sticker.id};
+                console.log(new_obj);
+                //Task.save(new_obj, function(data){
+                //    new_obj.id = data.task.id;
+                //    $scope.tasks.push(new_obj);
+                //    sticker.formTaskText = '';
+                //});
+            };
+
+            $scope.deleteTask = function(index){
+                console.log($scope.tasks[index]);
+                Task.delete({id: $scope.tasks[index].id}, function(data){
+                    $scope.tasks.splice(index, 1);
+                });
+            };
+
+            $scope.changeStatus = function(event, task){  // Change task status
+                task.status = task.status == "true" ? "false" : "true";
+                Task.update({id: task.id, status: task.status});
+            };
+
+            // Hide / Show ended tasks
+            $scope.getToggleStatus = function(){
+                if($scope.toggleStatus){return {status: "on", title: "Hide"};}
+                else{return {status: "off", title: "Show"};}
+            };
+            $scope.toggleEndedTasks = function(){
+                if($scope.toggleStatus) {
+                    $scope.toggleStatus = false;
+                    $scope.tasks = $filter('filter')($scope.tasks, {status: sticker.toggleStatus});
+                }else{
+                    $scope.toggleStatus = true;
+                    $scope.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
+                }
+            };
         });
     }
 ]);

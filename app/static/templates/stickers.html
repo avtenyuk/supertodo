@@ -26,9 +26,9 @@ Sort by:
 
         <div class="body">
 
-            <p class="memo">{{ sticker.memo }}</p>
+            <!--p class="memo">{{ sticker.memo }}</p>
             <span>Total: {{ sticker.getTotalTasks() }}</span>
-            <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span>
+            <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span-->
 
             <div ng-controller="TaskListCtrl">
                 <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
@@ -40,10 +40,10 @@ Sort by:
                 </li>
             </ul-->
 
-            <form class="form-horizontal">
+            <!--form class="form-horizontal">
                 <input type="text" ng-model="sticker.formTaskText" ng-model-instant>
-                <button class="btn btn-link btn-xs" ng-click="sticker.addTask()"><i class="fa fa-plus"></i></button>
-            </form>
+                <button class="btn btn-link btn-xs" ng-click="addTask(sticker)"><i class="fa fa-plus"></i></button>
+            </form-->
 
         </div>
 
