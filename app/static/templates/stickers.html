@@ -33,17 +33,6 @@ Sort by:
             <div ng-controller="TaskListCtrl">
                 <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
             </div>
-            <!--ul class="tasks">
-                <li ng-repeat="task in sticker.tasks">
-                    <span class="done-{{ task.status }}" ng-click="sticker.changeStatus($event, task)">{{ task.text }}</span>
-                    <button class="btn btn-link btn-xs" ng-click="sticker.deleteTask($index)"><i class="fa fa-close"></i></button>
-                </li>
-            </ul-->
-
-            <!--form class="form-horizontal">
-                <input type="text" ng-model="sticker.formTaskText" ng-model-instant>
-                <button class="btn btn-link btn-xs" ng-click="addTask(sticker)"><i class="fa fa-plus"></i></button>
-            </form-->
 
         </div>
 

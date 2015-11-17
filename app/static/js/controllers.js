@@ -30,7 +30,6 @@ controllers.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateP
     function($scope, $http, $location, $stateParams, $filter, Task, Sticker) {
         Task.get({}, function(data){
             $scope.tasks = $filter('filter')(data.tasks, {sticker_id: $scope.sticker.id});
-            $scope.toggleStatus = true;
 
             $scope.getTotalTasks = function(){
                 return $scope.tasks.length;
@@ -57,6 +56,7 @@ controllers.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateP
             };
 
             // Hide / Show ended tasks
+            $scope.toggleStatus = true;
             $scope.getToggleStatus = function(){
                 if($scope.toggleStatus){return {status: "on", title: "Hide"};}
                 else{return {status: "off", title: "Show"};}
@@ -64,10 +64,10 @@ controllers.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateP
             $scope.toggleEndedTasks = function(){
                 if($scope.toggleStatus) {
                     $scope.toggleStatus = false;
-                    $scope.tasks = $filter('filter')($scope.tasks, {status: sticker.toggleStatus});
+                    $scope.tasks = $filter('filter')($scope.tasks, {status: $scope.toggleStatus});
                 }else{
                     $scope.toggleStatus = true;
-                    $scope.tasks = $filter('filter')(data.tasks, {sticker: sticker.id});
+                    $scope.tasks = $filter('filter')(data.tasks, {sticker_id: $scope.sticker.id});
                 }
             };
         });
