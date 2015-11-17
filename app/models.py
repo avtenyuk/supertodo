@@ -1,11 +1,13 @@
-import json
 import datetime
 
+from app import app
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import func
 from flask.ext.login import UserMixin
 
 from app import db
+
+
+
 
 
 def session_commit():
@@ -23,9 +25,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(120))
     active = db.Column(db.Boolean, default=False)
     folders = db.relationship('Folder', backref='user')
+    current_token = db.Column(db.String(100), index=True, unique=True, nullable=True)
 
     def __str__(self):
         return self.nickname
+
 
 
 class Folder(db.Model):

@@ -25,7 +25,7 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="static/lib/font-awesome/css/font-awesome.min.css">
-    
+
 
 </head>
 <body>
@@ -34,10 +34,24 @@
 
 		<div class="row">
 			<div class="col-md-12">
-				Header
+				Header for {{ user }} <br>
+                Token {{ token }}
 			</div>
-		</div>
+            <div class="text-success alert-success text-center">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }} </li>
+                {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
 
+            </div>
+		</div>
+        {% block auth %}
+        {% endblock %}
         <div class="col-md-3">
             <div ui-view="view-folder-list"></div>
         </div>

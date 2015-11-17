@@ -1,9 +1,7 @@
 
 from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, g, session, escape
 from flask_restful import Resource, abort
-from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, \
-                            fresh_login_required, AnonymousUserMixin
-
+from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, AnonymousUserMixin
 from app import app, db, api
 from forms import LoginForm
 from models import Sticker, Folder, Task, User
@@ -11,8 +9,6 @@ from models import Sticker, Folder, Task, User
 
 class Anonymous(AnonymousUserMixin):
     name = u"Anonymous"
-
-
 
 login_manager = LoginManager()
 login_manager.anonymous_user = Anonymous
@@ -30,21 +26,17 @@ def load_user(id):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    return render_template("index.html", user=current_user.nickname.upper(), token=session['csrf_token'])
 
 
-
-@app.route("/secret")
-@login_required
-def secret():
-    session.clear()
-    return 'ok'
-
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    print request.json
+    return render_template('')
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if 'user_id' in session:
-        print 'redirect'
         return redirect(url_for('index'))
     form = LoginForm()
     if request.method == "POST" and "username" in request.form and form.validate_on_submit():
@@ -55,23 +47,28 @@ def login():
             flash("User does not exist or your password is bad. Try again")
             return redirect('/login')
         user.active = True
-        db.session.commit()
         remember = request.form.get("remember", "no") == "yes"
         if login_user(user, remember=remember):
             flash("Logged in!")
-            return redirect(url_for("secret"))
+            print 'start', user.current_token
+            print session['csrf_token']
+            user.current_token = session['csrf_token']
+            db.session.commit()
+            print 'finish', user.current_token
+            return redirect(url_for("index"))
         else:
             flash("Sorry, but you could not log in.")
     return render_template("login.html", form = form)
 
-
 @app.route("/logout")
 @login_required
 def logout():
+    current_user.current_token = ''
+    db.session.commit()
     session.clear()
     logout_user()
     flash("Logged out.")
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 
 @app.errorhandler(404)
@@ -84,14 +81,26 @@ def not_found(error):
 
 # end global functions
 
+def check_token(token):
+    user = User.query.filter_by(current_token=token).first()
+    if not user:
+        return abort(404, message='Token does not correct', status=404)
+    else:
+        return user
+
+
 # Start Sticker Api
 
 class StickerApi(Resource):
-
     def get(self):
-        stickers = [x.as_json() for x in Sticker.query.all()]
-        return {'stickers': stickers}, 200
+        if request.json:
+            user = check_token(request.json['token'])
+            stickers = [x.as_json() for x in db.session.query(Sticker).join(Folder).filter(Folder.user_id == user.id)]
+            return {'stickers': stickers}, 200
+        else:
+            return redirect(url_for('login'))
 
+    @login_required
     def post(self):
         new_sticker = Sticker(**request.json)
         db.session.add(new_sticker)
@@ -99,7 +108,6 @@ class StickerApi(Resource):
         return {'sticker': new_sticker.as_json()}, 201
 
 api.add_resource(StickerApi, '/api/sticker')
-
 
 def sticker_not_exist(sticker_id):
     sticker = Sticker.query.filter_by(id=sticker_id).first()
@@ -111,16 +119,19 @@ def sticker_not_exist(sticker_id):
 
 class OneStickerApi(Resource):
 
+    @login_required
     def get(self, sticker_id):
         sticker = sticker_not_exist(sticker_id)
         return {'sticker': sticker.as_json()}
 
+    @login_required
     def delete(self, sticker_id):
         sticker = sticker_not_exist(sticker_id)
         db.session.query(Sticker).filter_by(id=sticker.id).delete()
         db.session.commit()
         return '', 204
 
+    @login_required
     def put(self, sticker_id):
         sticker = sticker_not_exist(sticker_id)
         db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
@@ -136,9 +147,12 @@ api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')
 # Start Task Api
 
 class TaskApi(Resource):
+
+    @login_required
     def get(self):
         return {'tasks': [t.as_json() for t in Task.query.all()]}
 
+    @login_required
     def post(self):
         new_task = Task(**request.json)
         db.session.add(new_task)
@@ -157,16 +171,20 @@ def task_not_exist(task_id):
 
 
 class OneTaskApi(Resource):
+
+    @login_required
     def get(self, task_id):
         task = task_not_exist(task_id)
         return {'task': task.as_json()}
 
+    @login_required
     def put(self, task_id):
         task = task_not_exist(task_id)
         db.session.query(Task).filter(Task.id == task.id).update(request.json)
         db.session.commit()
         return {'task': task.as_json()}, 201
 
+    @login_required
     def delete(self, task_id):
         task = task_not_exist(task_id)
         db.session.query(Task).filter_by(id=task.id).delete()
@@ -181,9 +199,12 @@ api.add_resource(OneTaskApi, '/api/task/<task_id>')
 # Start Folder Api
 
 class FolderApi(Resource):
+
+    @login_required
     def get(self):
         return {'folders': [f.as_json() for f in Folder.query.all()]}
 
+    @login_required
     def post(self):
         new_folder = Folder(**request.json)
         db.session.add(new_folder)
@@ -200,16 +221,20 @@ def folder_not_exist(folder_id):
         return abort(404, message='This folder does not exist', status=404)
 
 class OneFolderApi(Resource):
+
+    @login_required
     def get(self, folder_id):
         folder = folder_not_exist(folder_id)
         return {'folder': folder.as_json()}
 
+    @login_required
     def put(self, folder_id):
         folder = folder_not_exist(folder_id)
         db.session.query(Folder).filter(Folder.id == folder.id).update(request.json)
         db.session.commit()
         return {'folder': folder.as_json()}, 201
 
+    @login_required
     def delete(self, folder_id):
         folder = folder_not_exist(folder_id)
         db.session.query(Folder).filter_by(id=folder.id).delete()
