@@ -9,6 +9,8 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 CSRF_ENABLED = True
 
+
+
 SECRET_KEY = 'you-will-never-guess'
 
 try:
