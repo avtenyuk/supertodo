@@ -13,36 +13,75 @@ Sort by:
 
     <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
-        <div class="header">
-            <span class="title">
-                {{ sticker.title }}
-            </span>
-            <span class="buttons">
-                <i role="button" class="fa fa-clock-o"></i>
-                <i role="button" class="fa fa-cog"></i>
-                <i role="button" class="fa fa-close" ng-click="deleteSticker(sticker, $index)"></i>
-            </span>
-        </div>
-
-        <div class="body">
-
-            <!--p class="memo">{{ sticker.memo }}</p>
-            <span>Total: {{ sticker.getTotalTasks() }}</span>
-            <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span-->
-
-            <div ng-controller="TaskListCtrl">
-                <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
+        <div class="show-mode" ng-hide="sticker.editMode">
+            <div class="header">
+                <span class="title">
+                    {{ sticker.title }}
+                </span>
+                <span class="buttons">
+                    <i role="button" class="fa fa-clock-o"></i>
+                    <i role="button" class="fa fa-cog" ng-click="sticker.editMode = true"></i>
+                    <i role="button" class="fa fa-close" ng-click="deleteSticker(sticker, $index)"></i>
+                </span>
             </div>
 
+            <div class="body">
+
+                <!--p class="memo">{{ sticker.memo }}</p>
+                <span>Total: {{ sticker.getTotalTasks() }}</span>
+                <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span-->
+
+                <div ng-controller="TaskListCtrl">
+                    <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
+                </div>
+
+            </div>
+
+            <div class="footer">
+                <span class="date">
+                    {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
+                </span>
+                <span class="buttons">
+                    <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
+                </span>
+            </div>
         </div>
 
-        <div class="footer">
-            <span class="date">
-                {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
-            </span>
-            <span class="buttons">
-                <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
-            </span>
+        <div class="edit-mode" ng-show="sticker.editMode">
+            <div class="header">
+                <span class="title">
+                    <input class="form-control input-sm" type="text" value="{{ sticker.title }}">
+                </span>
+            </div>
+
+            <div class="body">
+
+                <textarea class="form-control input-sm">{{ sticker.memo }}</textarea>
+
+                    <div class="input-append date form_datetime">
+                        <input size="16" type="text" value="" readonly>
+                        <span class="add-on"><i class="icon-th"></i></span>
+                    </div>
+
+                    <script type="text/javascript">
+                        $(".form_datetime").datetimepicker({
+                            format: "dd MM yyyy - hh:ii",
+                            autoclose: true,
+                            todayBtn: true,
+                            pickerPosition: "bottom-left"
+                        });
+                    </script>
+
+            </div>
+
+            <div class="footer">
+                <span class="date">
+                    {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
+                </span>
+                <span class="buttons">
+                    <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
+                </span>
+            </div>
         </div>
 
     </li>

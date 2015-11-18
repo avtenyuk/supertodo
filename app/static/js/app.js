@@ -48,5 +48,11 @@ app.config(function($stateProvider){$stateProvider
                 controller: 'StickerListCtrl'
             }
         }
-    });
+    })
+        .state('folder.', {
+            url: "/sticker/:id",
+            views: {
+
+            }
+        });
 });
