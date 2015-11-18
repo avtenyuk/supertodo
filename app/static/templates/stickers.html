@@ -13,75 +13,74 @@ Sort by:
 
     <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
-        <div class="show-mode" ng-hide="sticker.editMode">
-            <div class="header">
-                <span class="title">
-                    {{ sticker.title }}
-                </span>
-                <span class="buttons">
-                    <i role="button" class="fa fa-clock-o"></i>
-                    <i role="button" class="fa fa-cog" ng-click="sticker.editMode = true"></i>
-                    <i role="button" class="fa fa-close" ng-click="deleteSticker(sticker, $index)"></i>
-                </span>
-            </div>
+        <div class="header">
+            <span class="title">
+                {{ sticker.title }}
+            </span>
+            <span class="buttons">
+                <i role="button" class="fa fa-clock-o" ng-click="sticker.mode = 'notification'"></i>
+                <i role="button" class="fa fa-cog" ng-click="sticker.mode = 'edit'"></i>
+                <i role="button" class="fa fa-close" ng-click="deleteSticker(sticker, $index)"></i>
+            </span>
+        </div>
 
-            <div class="body">
-
-                <!--p class="memo">{{ sticker.memo }}</p>
-                <span>Total: {{ sticker.getTotalTasks() }}</span>
-                <span>{{ sticker.getToggleStatus().title }} ended: <button class="btn btn-link" ng-click="sticker.toggleEndedTasks()"><i class="fa fa-toggle-{{ sticker.getToggleStatus().status }}"></i></button></span-->
-
-                <div ng-controller="TaskListCtrl">
-                    <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
-                </div>
-
-            </div>
-
-            <div class="footer">
-                <span class="date">
-                    {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
-                </span>
-                <span class="buttons">
-                    <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
-                </span>
+        <!-- Normal mode -->
+        <div class="body" ng-hide="sticker.mode">
+            <div ng-controller="TaskListCtrl">
+                <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
             </div>
         </div>
 
-        <div class="edit-mode" ng-show="sticker.editMode">
-            <div class="header">
-                <span class="title">
-                    <input class="form-control input-sm" type="text" value="{{ sticker.title }}">
-                </span>
+        <!-- Edit mode -->
+        <div class="body" ng-show="sticker.mode == 'edit'">
+            <div class="form-group">
+                <label for="editTitle">Title</label>
+                <input class="form-control input-sm" id="editTitle" type="text" value="{{ sticker.title }}" placeholder="Title" ng-model="sticker.updatedTitle">
             </div>
-
-            <div class="body">
-
-                <textarea class="form-control input-sm">{{ sticker.memo }}</textarea>
-
-                    <div class="input-append date form_datetime">
-                        <input size="16" type="text" value="" readonly>
-                        <span class="add-on"><i class="icon-th"></i></span>
-                    </div>
-
-                    <script type="text/javascript">
-                        $(".form_datetime").datetimepicker({
-                            format: "dd MM yyyy - hh:ii",
-                            autoclose: true,
-                            todayBtn: true,
-                            pickerPosition: "bottom-left"
-                        });
-                    </script>
-
+            <div class="form-group">
+                <label for="editMemo">Memo</label>
+                <textarea class="form-control input-sm" id="editMemo" placeholder="Memo" ng-model="sticker.updatedMemo">{{ sticker.memo }}</textarea>
             </div>
+            <p>
+                <button type="button" class="btn btn-primary btn-xs" ng-click="saveSticker($event, sticker)">Save</button>
+                <button type="button" class="btn btn-default btn-xs" ng-click="sticker.mode = false">Cancel</button>
+            </p>
+        </div>
 
-            <div class="footer">
-                <span class="date">
-                    {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
-                </span>
-                <span class="buttons">
-                    <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
-                </span>
+        <!-- Notification mode -->
+        <div class="body" ng-show="sticker.mode == 'notification'">
+            <div class="form-group">
+                <label for="repeatNotification">Repeat</label>
+                <input type="checkbox" id="repeatNotification" ng-model="repeatNotification" />
             </div>
+            <div ng-show="repeatNotification">
+                Repeat every [year, month, week, day] on []
+            </div>
+            <div class="input-append date form_datetime">
+                <input size="16" type="text" value="" readonly>
+                <span class="add-on"><i class="icon-th"></i></span>
+            </div>
+            <script type="text/javascript">
+                $(".form_datetime").datetimepicker({
+                    format: "dd MM yyyy - hh:ii",
+                    autoclose: true,
+                    todayBtn: true,
+                    pickerPosition: "bottom-left"
+                });
+            </script>
+            <p>
+                <button type="button" class="btn btn-primary btn-xs" ng-click="makeNotification(sticker)">Save</button>
+                <button type="button" class="btn btn-default btn-xs" ng-click="sticker.mode = false">Cancel</button>
+            </p>
+        </div>
+
+        <div class="footer">
+            <span class="date">
+                {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
+            </span>
+            <span class="buttons">
+                <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>
+            </span>
         </div>
 
     </li>

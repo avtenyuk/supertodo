@@ -23,6 +23,16 @@ controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stat
                 $scope.stickers.splice(index, 1);
             });
         };
+
+        $scope.saveSticker = function(enent, sticker){
+            console.log($scope);
+//            var updatedData = {title: };
+            Sticker.update(updatedData);
+        };
+
+        $scope.makeNotification = function(sticker){
+            console.log('Makin notification for sticker with id ' + sticker.id);
+        };
     });
 }]);
 
