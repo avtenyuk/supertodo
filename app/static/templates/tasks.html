@@ -1,7 +1,20 @@
-TASKS: {{ tasks }}
+<p class="memo">{{ sticker.memo }}</p>
+<span>Total: {{ getTotalTasks() }}</span>
+<span>
+    {{ getToggleStatus().title }} ended:
+    <button class="btn btn-link" ng-click="toggleEndedTasks()">
+        <i class="fa fa-toggle-{{ getToggleStatus().status }}"></i>
+    </button>
+</span>
+
 <ul class="tasks">
     <li ng-repeat="task in tasks">
-        <span class="done-{{ task.status }}" ng-click="sticker.changeStatus($event, task)">{{ task.text }}</span>
-        <button class="btn btn-link btn-xs" ng-click="sticker.deleteTask($index)"><i class="fa fa-close"></i></button>
+        <span class="done-{{ task.status }}" ng-click="changeStatus($event, task)">{{ task.text }}</span>
+        <button class="btn btn-link btn-xs" ng-click="deleteTask($index)"><i class="fa fa-close"></i></button>
     </li>
 </ul>
+
+<form class="form-horizontal">
+    <input type="text" ng-model="tasks.formTaskText">
+    <button class="btn btn-link btn-xs" ng-click="addTask(sticker)"><i class="fa fa-plus"></i></button>
+</form>
