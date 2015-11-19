@@ -53,3 +53,9 @@ services.factory('Folder', ['$resource', function($resource){
         {}
     );
 }]);
+
+//// Render Tasks Service
+//services.factory('StickerData', function(){
+//    var stickers = {};
+//
+//});
