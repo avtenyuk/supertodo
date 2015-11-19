@@ -45,7 +45,7 @@
 			<div class="col-md-12">
                 <a href="/logout">logout</a> <br>
 				Header for {{ user }} <br>
-                Token {{ token }}
+                Token <input name=_csrf_token  value='{{ token }}'>
 			</div>
             <div class="text-success alert-success text-center">
                 {% with messages = get_flashed_messages() %}
