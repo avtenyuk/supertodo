@@ -9,7 +9,9 @@ Sort by:
 
 <button class="btn btn-default" ng-click="addSticker()"><i class="fa fa-plus"> New sticker</i></button>
 
-<ul class="stickers">
+<div class="no-stickers" ng-hide="stickers.length">There are no stickers. Make it now!</div>
+
+<ul class="stickers" ng-show="stickers.length">
 
     <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
@@ -18,6 +20,7 @@ Sort by:
                 {{ sticker.title }}
             </span>
             <span class="buttons">
+                <i role="button" class="fa fa-toggle-{{ sticker.toggleStatus }}" ng-click="sticker.toggleEndedTasks()"></i>
                 <i role="button" class="fa fa-clock-o" ng-click="sticker.mode = 'notification'"></i>
                 <i role="button" class="fa fa-cog" ng-click="sticker.mode = 'edit'"></i>
                 <i role="button" class="fa fa-close" ng-click="deleteSticker(sticker, $index)"></i>
@@ -28,6 +31,12 @@ Sort by:
         <div class="body" ng-hide="sticker.mode">
             <div ng-controller="TaskListCtrl">
                 <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
+                <span ng-hide="true">
+                    <!-- Pass variables from tasks scope to stickers scope -->
+                    {{ sticker.totalTasks = getTotalTasks() }}
+                    {{ sticker.toggleEndedTasks = toggleEndedTasks }}
+                    {{ sticker.toggleStatus = getToggleStatus().status }}
+                </span>
             </div>
         </div>
 
@@ -42,7 +51,7 @@ Sort by:
                 <textarea class="form-control input-sm" id="editMemo" placeholder="Memo" ng-model="sticker.updatedMemo">{{ sticker.memo }}</textarea>
             </div>
             <p>
-                <button type="button" class="btn btn-primary btn-xs" ng-click="saveSticker($event, sticker)">Save</button>
+                <button type="button" class="btn btn-primary btn-xs" ng-click="saveSticker(sticker, $index)">Save</button>
                 <button type="button" class="btn btn-default btn-xs" ng-click="sticker.mode = false">Cancel</button>
             </p>
         </div>
@@ -76,7 +85,8 @@ Sort by:
 
         <div class="footer">
             <span class="date">
-                {{ sticker.created | date:'dd-MM-yyyy HH:mm' }}
+                {{ sticker.created | date: 'dd-MM-yyyy HH:mm' }}
+                <span>Total: {{ sticker.totalTasks }}</span>
             </span>
             <span class="buttons">
                 <a class="btn btn-link" href="#/sticker/{{ sticker.id }}"><i class="fa fa-arrows-alt"></i></a>

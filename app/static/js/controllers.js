@@ -8,7 +8,6 @@ controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stat
     Sticker.get({}, function(data){
         $scope.stickers = $filter('filter')(data.stickers, {folder_id: $stateParams.id});
         $scope.orderProp = '!created';
-        //$scope.editMode = false;
 
         $scope.addSticker = function(data){
             var new_obj = {title: "", memo: "", folder_id: $stateParams.id ? $stateParams.id : 1};
@@ -24,10 +23,13 @@ controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stat
             });
         };
 
-        $scope.saveSticker = function(enent, sticker){
-            console.log($scope);
-//            var updatedData = {title: };
-            Sticker.update(updatedData);
+        $scope.saveSticker = function(sticker, index){
+            var updatedData = {id: sticker.id, title: sticker.updatedTitle, memo: sticker.updatedMemo};
+            Sticker.update(updatedData, function(data){
+                $scope.stickers[index].title = updatedData.title;
+                $scope.stickers[index].memo = updatedData.memo;
+                sticker.mode = false;
+            });
         };
 
         $scope.makeNotification = function(sticker){
