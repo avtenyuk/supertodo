@@ -157,12 +157,11 @@ class OneStickerApi(Resource):
         if sticker.folder_id not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
         else:
-            db.session.query(Sticker).filter_by(id=sticker.id).delete()
+            sticker.trash = True
             db.session.commit()
             return '', 204
 
 
-    @login_required
     def put(self, sticker_id):
         try:
             user = check_token(request.json['token'])

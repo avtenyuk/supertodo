@@ -17,5 +17,5 @@ done
 curl -i -H "Content-Type: application/json" -X GET -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388"}' http://127.0.0.1:5000/api/sticker
 curl -i -H "Content-Type: application/json" -X GET -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388", "trash": "true"}' http://127.0.0.1:5000/api/sticker
 curl -i -H "Content-Type: application/json" -X POST -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388", "title": "SKJDJAKSJDKKJSKKJ", "memo":"many text", "folder_id": 18}' http://127.0.0.1:5000/api/sticker
-curl -i -H "Content-Type: application/json" -X GET -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388"}' http://127.0.0.1:5000/api/sticker/10297
-curl -i -H "Content-Type: application/json" -X DELETE -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388"}' http://127.0.0.1:5000/api/sticker/10297
+curl -i -H "Content-Type: application/json" -X GET -d '{"token": "eed37a8c0ab4a8bf1f403d87aa33990b12f12154"}' http://127.0.0.1:5000/api/sticker/10300
+curl -i -H "Content-Type: application/json" -X DELETE -d '{"token": "eed37a8c0ab4a8bf1f403d87aa33990b12f12154"}' http://127.0.0.1:5000/api/sticker/10300
