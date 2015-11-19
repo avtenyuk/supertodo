@@ -84,32 +84,50 @@ def not_found(error):
 def check_token(token):
     user = User.query.filter_by(current_token=token).first()
     if not user:
-        return abort(404, message='Token does not correct', status=404)
+        return abort(400, message='Token does not correct', status=400)
     else:
         return user
 
-
 # Start Sticker Api
+def get_user_folders(user):
+    user_folders_id = [x.id for x in user.folders]
+    return user_folders_id
 
+# DONE!
 class StickerApi(Resource):
-    def get(self):
-        if request.json:
-            user = check_token(request.json['token'])
-            stickers = [x.as_json() for x in db.session.query(Sticker).join(Folder).filter(Folder.user_id == user.id)]
-            return {'stickers': stickers}, 200
-        else:
-            return redirect(url_for('login'))
 
-    @login_required
+    def get(self):
+        try:
+            user = check_token(request.json['token'])
+        except KeyError:
+            return abort(400, message='You must have a token', status=400)
+        trash_status = False
+        try:
+            if request.json['trash']:
+                trash_status = True
+        except KeyError:
+            pass
+        stickers = [x.as_json() for x in db.session.query(Sticker).filter(Sticker.trash == trash_status) \
+                                                            .join(Folder).filter(Folder.user_id == user.id)]
+        return {'stickers': stickers}, 200
+
     def post(self):
+        try:
+            user = check_token(request.json['token'])
+        except KeyError:
+            return abort(400, message='You must have a token', status=400)
+        del request.json['token']
+        if int(request.json['folder_id']) not in get_user_folders(user):
+            return abort(403, message='Access is denied', status=403)
         new_sticker = Sticker(**request.json)
         db.session.add(new_sticker)
         db.session.commit()
-        return {'sticker': new_sticker.as_json()}, 201
+        return {'sticker': new_sticker.as_json(), 'user_id': user.id}, 201
 
 api.add_resource(StickerApi, '/api/sticker')
 
-def sticker_not_exist(sticker_id):
+
+def sticker_exist(sticker_id):
     sticker = Sticker.query.filter_by(id=sticker_id).first()
     if sticker:
         return sticker
@@ -119,25 +137,45 @@ def sticker_not_exist(sticker_id):
 
 class OneStickerApi(Resource):
 
-    @login_required
     def get(self, sticker_id):
-        sticker = sticker_not_exist(sticker_id)
-        return {'sticker': sticker.as_json()}
+        try:
+            user = check_token(request.json['token'])
+        except KeyError:
+            return abort(400, message='You must have a token', status=400)
+        sticker = sticker_exist(sticker_id)
+        if sticker.folder_id not in get_user_folders(user):
+            return abort(403, message='Access is denied', status=403)
+        else:
+            return {'sticker': sticker.as_json()}
 
-    @login_required
     def delete(self, sticker_id):
-        sticker = sticker_not_exist(sticker_id)
-        db.session.query(Sticker).filter_by(id=sticker.id).delete()
-        db.session.commit()
-        return '', 204
+        try:
+            user = check_token(request.json['token'])
+        except KeyError:
+            return abort(400, message='You must have a token', status=400)
+        sticker = sticker_exist(sticker_id)
+        if sticker.folder_id not in get_user_folders(user):
+            return abort(403, message='Access is denied', status=403)
+        else:
+            db.session.query(Sticker).filter_by(id=sticker.id).delete()
+            db.session.commit()
+            return '', 204
+
 
     @login_required
     def put(self, sticker_id):
-        sticker = sticker_not_exist(sticker_id)
-        db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
-        db.session.commit()
-        print 'args - ', request.json
-        return {'sticker': sticker.as_json()}, 201
+        try:
+            user = check_token(request.json['token'])
+        except KeyError:
+            return abort(400, message='You must have a token', status=400)
+        sticker = sticker_exist(sticker_id)
+        if sticker.folder_id not in get_user_folders(user):
+            return abort(403, message='Access is denied', status=403)
+        else:
+            del request.json['token']
+            db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
+            db.session.commit()
+            return {'sticker': sticker.as_json()}, 201
 
 
 api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')

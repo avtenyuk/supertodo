@@ -14,6 +14,8 @@ do
 done
 
 # curl -X "DELETE" http://127.0.0.1:5000/api/sticker/10265
-# curl -i -H "Content-Type: application/json" -X POST -d '{"status": false, "text":"to fo something", "sticker_id": 10280}' http://127.0.0.1:5000/api/task
-# curl -i -H "Content-Type: application/json" -X PUT -d '{"status": "true"}' http://127.0.0.1:5000/api/task/10
-# curl -i -H "Content-Type: application/json" -X GET -d '{"csrf_token": "64b2fb6ab0d39e4ad8b84bf3079616114fb66dc6"}' http://127.0.0.1:5000/api/sticker
+curl -i -H "Content-Type: application/json" -X GET -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388"}' http://127.0.0.1:5000/api/sticker
+curl -i -H "Content-Type: application/json" -X GET -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388", "trash": "true"}' http://127.0.0.1:5000/api/sticker
+curl -i -H "Content-Type: application/json" -X POST -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388", "title": "SKJDJAKSJDKKJSKKJ", "memo":"many text", "folder_id": 18}' http://127.0.0.1:5000/api/sticker
+curl -i -H "Content-Type: application/json" -X GET -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388"}' http://127.0.0.1:5000/api/sticker/10297
+curl -i -H "Content-Type: application/json" -X DELETE -d '{"token": "8dbeb5b9e2838dc1c65fd44be8a8fb73f8e68388"}' http://127.0.0.1:5000/api/sticker/10297
