@@ -82,11 +82,14 @@ def not_found(error):
 # end global functions
 
 def check_token(token):
-    user = User.query.filter_by(current_token=token).first()
-    if not user:
-        return abort(400, message='Token does not correct', status=400)
-    else:
-        return user
+    try:
+        user = User.query.filter_by(current_token=token).first()
+        if not user:
+            return abort(400, message='Token does not correct', status=400)
+        else:
+            return user
+    except KeyError:
+        return abort(400, message='You must have a token', status=400)
 
 # Start Sticker Api
 def get_user_folders(user):
@@ -94,21 +97,12 @@ def get_user_folders(user):
     return user_folders_id
 
 
-def check_token_decorator(func):
-    def wrapper(self):
-        try:
-            user = check_token(request.json['token'])
-            return func(self, user)
-        except KeyError:
-            return abort(400, message='You must have a token', status=400)
-    return wrapper
-
 
 # DONE!
 class StickerApi(Resource):
 
-    @check_token_decorator
-    def get(self, user):
+    def get(self):
+        user = check_token(request.json['token'])
         trash_status = False
         try:
             if request.json['trash']:
@@ -119,8 +113,9 @@ class StickerApi(Resource):
                                                             .join(Folder).filter(Folder.user_id == user.id)]
         return {'stickers': stickers}, 200
 
-    @check_token_decorator
-    def post(self, user):
+
+    def post(self):
+        user = check_token(request.json['token'])
         del request.json['token']
         if int(request.json['folder_id']) not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
@@ -133,33 +128,35 @@ api.add_resource(StickerApi, '/api/sticker')
 
 
 def sticker_exist(sticker_id):
-    sticker = Sticker.query.filter_by(id=sticker_id).first()
+    try:
+        sticker = Sticker.query.filter_by(id=sticker_id).first()
+    except KeyError:
+        return abort(403, message='You need a sticker_id', status=403)
     if sticker:
         return sticker
     else:
         return abort(404, message='This scticker does not exist', status=404)
+
+
+def check_sticker_owner(sticker_id, user):
+    sticker = sticker_exist(sticker_id)
+    if sticker.folder_id not in get_user_folders(user):
+        return abort(403, message='Access is denied', status=403)
+    else:
+        return sticker
 
 # DONE!
 class OneStickerApi(Resource):
 
 
     def get(self, sticker_id):
-        try:
-            user = check_token(request.json['token'])
-        except KeyError:
-            return abort(400, message='You must have a token', status=400)
-        sticker = sticker_exist(sticker_id)
-        if sticker.folder_id not in get_user_folders(user):
-            return abort(403, message='Access is denied', status=403)
-        else:
-            return {'sticker': sticker.as_json()}
+        user = check_token(request.json['token'])
+        sticker = check_sticker_owner(sticker_id, user)
+        return {'sticker': sticker.as_json()}
 
     def delete(self, sticker_id):
-        try:
-            user = check_token(request.json['token'])
-        except KeyError:
-            return abort(400, message='You must have a token', status=400)
-        sticker = sticker_exist(sticker_id)
+        user = check_token(request.json['token'])
+        sticker = check_sticker_owner(sticker_id, user)
         if sticker.folder_id not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
         else:
@@ -169,18 +166,12 @@ class OneStickerApi(Resource):
 
 
     def put(self, sticker_id):
-        try:
-            user = check_token(request.json['token'])
-        except KeyError:
-            return abort(400, message='You must have a token', status=400)
-        sticker = sticker_exist(sticker_id)
-        if sticker.folder_id not in get_user_folders(user):
-            return abort(403, message='Access is denied', status=403)
-        else:
-            del request.json['token']
-            db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
-            db.session.commit()
-            return {'sticker': sticker.as_json()}, 201
+        user = check_token(request.json['token'])
+        sticker = check_sticker_owner(sticker_id, user)
+        del request.json['token']
+        db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
+        db.session.commit()
+        return {'sticker': sticker.as_json()}, 201
 
 
 api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')
@@ -193,12 +184,13 @@ api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')
 # DONE!
 class TaskApi(Resource):
 
+
     def get(self):
+        user = check_token(request.json['token'])
         try:
-            user = check_token(request.json['token'])
+            sticker = sticker_exist(request.json['sticker_id'])
         except KeyError:
-            return abort(400, message='You must have a token', status=400)
-        sticker = sticker_exist(request.json['sticker_id'])
+            return abort(403, message='You need a sticker_id', status=403)
         if sticker.folder_id not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
         task_list = []
@@ -207,13 +199,11 @@ class TaskApi(Resource):
                              'trash': sticker.trash})
         return {'tasks': task_list}
 
+
     def post(self):
+        user = check_token(request.json['token'])
         try:
-            user = check_token(request.json['token'])
-        except KeyError:
-            return abort(400, message='You must have a token', status=400)
-        try:
-            sticker = Sticker.query.get(int(request.json['sticker_id']))
+            sticker = sticker_exist(request.json['sticker_id'])
         except AttributeError:
             return abort(403, message='Access is denied', status=403)
         if not sticker:
@@ -240,33 +230,38 @@ def task_not_exist(task_id):
         return abort(404, message='This task does not exist', status=404)
 
 
-class OneTaskApi(Resource):
-
-    def get(self, task_id):
-        try:
-            user = check_token(request.json['token'])
-        except KeyError:
-            return abort(400, message='You must have a token', status=400)
+def check_owner_task(task_id, user):
         task = task_not_exist(task_id)
         task_owner = db.session.query(User).filter \
                     (~User.folders.any(Folder.stickers.any(Sticker.tasks.any(Task.id == user.id)))).first()
-        task_owner = task_owner[0]
+        task_owner = task_owner
         if task_owner.id == user.id:
-            return {'task': task.as_json()}
+            return task
         else:
             return abort(403, message='Access is denied', status=403)
 
-    @login_required
+
+class OneTaskApi(Resource):
+
+    def get(self, task_id):
+        user = check_token(request.json['token'])
+        task = check_owner_task(task_id, user)
+        return {'task': task.as_json()}
+
+
     def put(self, task_id):
-        task = task_not_exist(task_id)
+        user = check_token(request.json['token'])
+        task = check_owner_task(task_id, user)
+        del request.json['token']
         db.session.query(Task).filter(Task.id == task.id).update(request.json)
         db.session.commit()
         return {'task': task.as_json()}, 201
 
-    @login_required
+
     def delete(self, task_id):
-        task = task_not_exist(task_id)
-        db.session.query(Task).filter_by(id=task.id).delete()
+        user = check_token(request.json['token'])
+        task = check_owner_task(task_id, user)
+        task.trash = True
         db.session.commit()
         return '', 204
 
