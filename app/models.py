@@ -32,7 +32,7 @@ class Folder(db.Model):
     name = db.Column(db.String(80), index=True)
     stickers = db.relationship('Sticker', backref='folder')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    trash = db.Column(db.Boolean, default=False)
+    trash = db.Column(db.Boolean, default=False, nullable=True)
 
     def __init__(self, name):
         self.name = name
@@ -51,7 +51,7 @@ class Sticker(db.Model):
     created = db.Column(db.DateTime)
     folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
     tasks = db.relationship('Task', backref='task')
-    trash = db.Column(db.Boolean, default=False)
+    trash = db.Column(db.Boolean, default=False, nullable=True)
 
     def __init__(self, title, memo, folder_id):
         self.title = title
@@ -73,7 +73,7 @@ class Task(db.Model):
     text = db.Column(db.Text, index=True)
     status = db.Column(db.Boolean, default=False)
     sticker_id = db.Column(db.Integer, db.ForeignKey('sticker.id'))
-    trash = db.Column(db.Boolean, default=False)
+    trash = db.Column(db.Boolean, default=False, nullable=True)
 
     def __init__(self, text, sticker_id, status):
         self.text = text
