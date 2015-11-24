@@ -215,7 +215,6 @@ class TaskApi(Resource):
         if sticker.folder_id not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
         else:
-            del request.json['token']
             request.json['status'] = False
             new_task = Task(**request.json)
             db.session.add(new_task)
@@ -247,21 +246,21 @@ def check_owner_task(task_id, user):
 
 class OneTaskApi(Resource):
 
+    @login_required
     def get(self, task_id):
         user = get_user_from_id(session['user_id'])
         task = check_owner_task(task_id, user)
         return {'task': task.as_json()}
 
-
+    @login_required
     def put(self, task_id):
         user = get_user_from_id(session['user_id'])
         task = check_owner_task(task_id, user)
-        del request.json['token']
         db.session.query(Task).filter(Task.id == task.id).update(request.json)
         db.session.commit()
         return {'task': task.as_json()}, 201
 
-
+    @login_required
     def delete(self, task_id):
         user = get_user_from_id(session['user_id'])
         task = check_owner_task(task_id, user)
@@ -295,8 +294,8 @@ class FolderApi(Resource):
 
 api.add_resource(FolderApi, '/api/folder')
 
-def folder_not_exist(folder_id):
-    folder = Folder.query.filter_by(id=folder_id).first()
+def folder_not_exist(folder_id, user_id):
+    folder = Folder.query.filter_by(id=folder_id, user_id=user_id).first()
     if folder:
         return folder
     else:
@@ -306,20 +305,23 @@ class OneFolderApi(Resource):
 
     @login_required
     def get(self, folder_id):
-        folder = folder_not_exist(folder_id)
+        user = get_user_from_id(session['user_id'])
+        folder = folder_not_exist(folder_id, user.id)
         return {'folder': folder.as_json()}
 
     @login_required
     def put(self, folder_id):
-        folder = folder_not_exist(folder_id)
+        user = get_user_from_id(session['user_id'])
+        folder = folder_not_exist(folder_id, user.id)
         db.session.query(Folder).filter(Folder.id == folder.id).update(request.json)
         db.session.commit()
         return {'folder': folder.as_json()}, 201
 
     @login_required
     def delete(self, folder_id):
-        folder = folder_not_exist(folder_id)
-        db.session.query(Folder).filter_by(id=folder.id).delete()
+        user = get_user_from_id(session['user_id'])
+        folder = folder_not_exist(folder_id, user.id)
+        folder.trash = True
         db.session.commit()
         return '', 204
 
