@@ -90,8 +90,11 @@ controllers.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateP
 //Folder List Controller
 controllers.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stateParams', 'Folder',
     function($scope, $http, $location, $stateParams, Folder){
-    Folder.get({}, function(data){
+    Folder.get({trash: false}, function(data){
         $scope.folders = data.folders;
+        $scope.isCurrent = function(id){
+            return $location.path().match(/\d+/)[0] == id ? true : false;
+        };
 
         $scope.addFolder = function(data){
             var new_obj = {name: $scope.folderName};
