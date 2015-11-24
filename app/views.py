@@ -188,7 +188,7 @@ api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')
 # DONE!
 class TaskApi(Resource):
 
-
+    @login_required
     def get(self):
         user = get_user_from_id(session['user_id'])
         try:
@@ -203,7 +203,7 @@ class TaskApi(Resource):
                              'trash': sticker.trash})
         return {'tasks': task_list}
 
-
+    @login_required
     def post(self):
         user = get_user_from_id(session['user_id'])
         try:
