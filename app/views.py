@@ -192,8 +192,8 @@ class TaskApi(Resource):
     def get(self):
         user = get_user_from_id(session['user_id'])
         try:
-            sticker = sticker_exist(request.json['sticker_id'])
-        except KeyError:
+            sticker = sticker_exist(request.args['sticker_id'])
+        except (KeyError, TypeError):
             return abort(403, message='You need a sticker_id', status=403)
         if sticker.folder_id not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
