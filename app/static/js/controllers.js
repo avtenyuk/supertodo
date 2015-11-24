@@ -97,6 +97,7 @@ controllers.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stat
             var new_obj = {name: $scope.folderName};
             Folder.save(new_obj, function(data){
                 new_obj.id = data.folder.id;
+                $scope.folderName = "";
                 $scope.folders.push(new_obj);
             });
         };
