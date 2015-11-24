@@ -1,5 +1,6 @@
 <p class="memo">{{ sticker.memo }}</p>
 
+<p class="tasks-title">Tasks</p>
 <ul class="tasks">
     <li ng-repeat="task in tasks">
         <span class="done-{{ task.status }}" ng-click="changeStatus($event, task)">{{ task.text }}</span>
