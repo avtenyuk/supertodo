@@ -55,7 +55,7 @@ def login():
             user.current_token = session['csrf_token']
             db.session.commit()
             print 'finish', user.current_token
-            return redirect(url_for("index"))
+            return redirect('/#!/')
         else:
             flash("Sorry, but you could not log in.")
     return render_template("login.html", form = form)
