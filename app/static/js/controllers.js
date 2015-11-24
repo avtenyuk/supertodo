@@ -41,7 +41,7 @@ controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stat
 //Task List Controller
 controllers.controller('TaskListCtrl', ['$scope', '$http', '$location', '$stateParams', '$filter', 'Task', 'Sticker',
     function($scope, $http, $location, $stateParams, $filter, Task, Sticker) {
-        Task.get({}, function(data){
+        Task.get({sticker_id: $scope.sticker.id}, function(data){
             $scope.tasks = $filter('filter')(data.tasks, {sticker_id: $scope.sticker.id});
 
             $scope.getTotalTasks = function(){

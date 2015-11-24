@@ -1,10 +1,13 @@
 <ul class="folders">
     <!--li><a href="#!/">ALL</a></li-->
-    <li><a ui-sref="index">ALL</a></li>
-    <li ng-repeat="folder in folders">
+    <li><a ui-sref="index"><i class="fa fa-folder"></i> ALL</a></li>
+    <li ng-repeat="folder in folders" class="folder">
         <!--a href="#!/folder/{{folder.id}}">{{folder.name}}</a-->
-        <a ui-sref="folder({id:folder.id})">{{folder.name}}</a>
-        <button class="btn btn-link btn-xs" ng-click="deleteFolder(folder, $index)"><i class="fa fa-remove"></i></button>
+        <a ui-sref="folder({id:folder.id})">
+            <i class="fa fa-folder"></i>
+            {{folder.name}}
+        </a>
+        <button class="btn btn-link btn-xs delete" ng-click="deleteFolder(folder, $index)"><i class="fa fa-remove"></i></button>
     </li>
 </ul>
 
