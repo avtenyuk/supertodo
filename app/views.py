@@ -81,15 +81,15 @@ def not_found(error):
 
 # end global functions
 
-def check_token(token):
-    try:
-        user = User.query.filter_by(current_token=token).first()
-        if not user:
-            return abort(400, message='Token does not correct', status=400)
-        else:
-            return user
-    except KeyError:
-        return abort(400, message='You must have a token', status=400)
+# def check_token(token):
+#     try:
+#         user = User.query.filter_by(current_token=token).first()
+#         if not user:
+#             return abort(400, message='Token does not correct', status=400)
+#         else:
+#             return user
+#     except KeyError:
+#         return abort(400, message='You must have a token', status=400)
 
 # Start Sticker Api
 def get_user_folders(user):
@@ -97,26 +97,30 @@ def get_user_folders(user):
     return user_folders_id
 
 
+def get_user_from_id(user_id):
+    user = User.query.get(user_id)
+    return user
+
 
 # DONE!
 class StickerApi(Resource):
 
+    @login_required
     def get(self):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         trash_status = False
         try:
-            if request.json['trash']:
+            if 'trash' in request.json:
                 trash_status = True
-        except KeyError:
+        except (KeyError, TypeError):
             pass
         stickers = [x.as_json() for x in db.session.query(Sticker).filter(Sticker.trash == trash_status) \
                                                             .join(Folder).filter(Folder.user_id == user.id)]
         return {'stickers': stickers}, 200
 
-
+    @login_required
     def post(self):
-        user = check_token(request.json['token'])
-        del request.json['token']
+        user = get_user_from_id(session['user_id'])
         if int(request.json['folder_id']) not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
         new_sticker = Sticker(**request.json)
@@ -148,14 +152,15 @@ def check_sticker_owner(sticker_id, user):
 # DONE!
 class OneStickerApi(Resource):
 
-
+    @login_required
     def get(self, sticker_id):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         sticker = check_sticker_owner(sticker_id, user)
         return {'sticker': sticker.as_json()}
 
+    @login_required
     def delete(self, sticker_id):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         sticker = check_sticker_owner(sticker_id, user)
         if sticker.folder_id not in get_user_folders(user):
             return abort(403, message='Access is denied', status=403)
@@ -164,11 +169,10 @@ class OneStickerApi(Resource):
             db.session.commit()
             return '', 204
 
-
+    @login_required
     def put(self, sticker_id):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         sticker = check_sticker_owner(sticker_id, user)
-        del request.json['token']
         db.session.query(Sticker).filter(Sticker.id==sticker.id).update(request.json)
         db.session.commit()
         return {'sticker': sticker.as_json()}, 201
