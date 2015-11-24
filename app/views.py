@@ -190,7 +190,7 @@ class TaskApi(Resource):
 
 
     def get(self):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         try:
             sticker = sticker_exist(request.json['sticker_id'])
         except KeyError:
@@ -205,7 +205,7 @@ class TaskApi(Resource):
 
 
     def post(self):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         try:
             sticker = sticker_exist(request.json['sticker_id'])
         except AttributeError:
@@ -248,13 +248,13 @@ def check_owner_task(task_id, user):
 class OneTaskApi(Resource):
 
     def get(self, task_id):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         task = check_owner_task(task_id, user)
         return {'task': task.as_json()}
 
 
     def put(self, task_id):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         task = check_owner_task(task_id, user)
         del request.json['token']
         db.session.query(Task).filter(Task.id == task.id).update(request.json)
@@ -263,7 +263,7 @@ class OneTaskApi(Resource):
 
 
     def delete(self, task_id):
-        user = check_token(request.json['token'])
+        user = get_user_from_id(session['user_id'])
         task = check_owner_task(task_id, user)
         task.trash = True
         db.session.commit()
@@ -280,11 +280,15 @@ class FolderApi(Resource):
 
     @login_required
     def get(self):
-        return {'folders': [f.as_json() for f in Folder.query.all()]}
+        user = get_user_from_id(session['user_id'])
+        return {'folders': [f.as_json() for f in Folder.query.filter_by(user_id=user.id)]}
 
     @login_required
     def post(self):
-        new_folder = Folder(**request.json)
+        user = get_user_from_id(session['user_id'])
+        name = request.json['name']
+        new_folder = Folder(name=name)
+        new_folder.user_id = user.id
         db.session.add(new_folder)
         db.session.commit()
         return {'folder': new_folder.as_json()}, 201
