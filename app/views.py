@@ -23,23 +23,14 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-@app.route("/todo/#!/")
+@app.route("/todo")
 @login_required
 def todo():
-    return render_template("todo.html", user=current_user.nickname.upper(), token=session['csrf_token'])
+    return render_template("todo.html")
 
 
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("main.html")
-
-
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-    print request.json
-    return render_template('')
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
     if 'user_id' in session:
         return redirect(url_for('todo'))
     form = LoginForm()
@@ -49,7 +40,7 @@ def login():
         user = User.query.filter_by(nickname=username, password=password).first()
         if not user:
             flash("User does not exist or your password is bad. Try again")
-            return redirect('/login')
+            return redirect(url_for('index'))
         user.active = True
         remember = request.form.get("remember", "no") == "yes"
         if login_user(user, remember=remember):
@@ -59,10 +50,11 @@ def login():
             user.current_token = session['csrf_token']
             db.session.commit()
             print 'finish', user.current_token
-            return redirect(url_for('todo'))
+            # return redirect(url_for('todo'))
+            return redirect('/todo#!/')
         else:
             flash("Sorry, but you could not log in.")
-    return render_template("login.html", form = form)
+    return render_template("index.html", form = form)
 
 @app.route("/logout")
 @login_required
@@ -72,7 +64,7 @@ def logout():
     session.clear()
     logout_user()
     flash("Logged out.")
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
 
 @app.errorhandler(404)
