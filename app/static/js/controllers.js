@@ -93,7 +93,11 @@ controllers.controller('FolderListCtrl', ['$scope', '$http', '$location', '$stat
     Folder.get({trash: false}, function(data){
         $scope.folders = data.folders;
         $scope.isCurrent = function(id){
-            return $location.path().match(/\d+/)[0] == id ? true : false;
+            if($location.path() !== '/') {
+                return $location.path().match(/\d+/)[0] == id ? true : false;
+            }else{
+                return false;
+            }
         };
 
         $scope.addFolder = function(data){
