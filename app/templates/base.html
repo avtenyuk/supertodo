@@ -39,13 +39,17 @@
 </head>
 <body>
 
+    <input type="hidden" name="csrf_token"  value="{{ token }}"/>
+
 	<div class="container-fluid">
 
 		<div class="row">
-			<div class="col-md-12">
-                <a href="/logout">logout</a> <br>
-				Header for {{ user }} <br>
-                Token <input name="csrf_token"  value="{{ token }}"/>
+			<div class="col-md-10">
+                Awesome logo must be here
+            </div>
+			<div class="col-md-2">
+                <i class="fa fa-user"> {{ user }} </i>
+                <a href="/logout"> <i class="fa fa-power-off"></i> </a>
 			</div>
             <div class="text-success alert-success text-center">
                 {% with messages = get_flashed_messages() %}
