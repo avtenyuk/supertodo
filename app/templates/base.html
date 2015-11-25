@@ -41,9 +41,9 @@
 
     <input type="hidden" name="csrf_token"  value="{{ token }}"/>
 
-	<div class="container-fluid wrapper">
+	<div class="container-fluid global-wrapper">
 
-		<div class="row header">
+		<div class="row global-header">
 			<div class="col-md-2 logo">
                 <img src="static/images/logo.png" alt="Super ToDo">
             </div>
@@ -60,13 +60,13 @@
         {% block auth %}
         {% endblock %}
 
-        <div class="body">
+        <div class="global-body">
             {% block content %}{% endblock %}
         </div>
 
 	</div>
 
-    <div class="row footer">
+    <div class="row global-footer">
         <div class="col-md-12">
             Footer
         </div>
