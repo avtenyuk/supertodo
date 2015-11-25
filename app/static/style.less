@@ -56,6 +56,7 @@
 }
 
 html, body{
+  height: 100%;
   padding: 0;
   margin: 0;
 }
@@ -69,12 +70,26 @@ a:hover{
 }
 
 //base.html====================================================================
-.header{
-  .logo{
-	img{
-	  width: 48px;
+.wrapper{
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  .header{
+	.logo{
+	  img{
+		width: 48px;
+	  }
 	}
   }
+  .body{
+	padding-bottom: 90px;
+	.content{}
+  }
+}
+
+.footer{
+  margin-top: -90px;
+  height: 90px;
 }
 
 
@@ -95,7 +110,7 @@ a:hover{
   }
 }
 
-//sticker.html=================================================================
+//todo.html=================================================================
 .sticker{
   position: relative;
   height: 100%;

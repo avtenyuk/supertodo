@@ -41,7 +41,7 @@
 
     <input type="hidden" name="csrf_token"  value="{{ token }}"/>
 
-	<div class="container-fluid">
+	<div class="container-fluid wrapper">
 
 		<div class="row header">
 			<div class="col-md-2 logo">
@@ -69,17 +69,18 @@
 
         {% block auth %}
         {% endblock %}
-
-        {% block todo %}
-        {% endblock %}
-
-		<div class="row footer">
-			<div class="col-md-12">
-				Footer
-			</div>
-		</div>
+        <div class="body">
+            {% block todo %}
+            {% endblock %}
+        </div>
 
 	</div>
+
+    <div class="row footer">
+        <div class="col-md-12">
+            Footer
+        </div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
