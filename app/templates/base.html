@@ -50,28 +50,18 @@
             <div class="col-md-8">
                 Awesome slogan must be here
             </div>
-			<div class="col-md-2">
-                <i class="fa fa-user"> {{ user }} </i>
+			{% block logout %}
+            <div class="col-md-2">
                 <a href="/logout"> <i class="fa fa-power-off"></i> </a>
 			</div>
-            <div class="text-success alert-success text-center">
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <ul>
-                {% for message in messages %}
-                    <li>{{ message }} </li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                {% endwith %}
-            </div>
+            {% endblock %}
 		</div>
 
         {% block auth %}
         {% endblock %}
+
         <div class="body">
-            {% block todo %}
-            {% endblock %}
+            {% block content %}{% endblock %}
         </div>
 
 	</div>
@@ -79,17 +69,6 @@
     <div class="row footer">
         <div class="col-md-12">
             Footer
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="stickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-body sticker">
-                    {% include "sticker.html" %}
-                </div>
-            </div>
         </div>
     </div>
 

@@ -1,5 +1,5 @@
 
-from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, g, session, escape
+from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, session
 from flask_restful import Resource, abort
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, AnonymousUserMixin
 from app import app, db, api
@@ -23,21 +23,16 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-@app.route("/")
+@app.route("/todo")
 @login_required
+def todo():
+    return render_template("todo.html")
+
+
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html", user=current_user.nickname.upper(), token=session['csrf_token'])
-
-
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-    print request.json
-    return render_template('')
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
     if 'user_id' in session:
-        return redirect(url_for('index'))
+        return redirect(url_for('todo'))
     form = LoginForm()
     if request.method == "POST" and "username" in request.form and form.validate_on_submit():
         username = request.form["username"]
@@ -45,7 +40,7 @@ def login():
         user = User.query.filter_by(nickname=username, password=password).first()
         if not user:
             flash("User does not exist or your password is bad. Try again")
-            return redirect('/login')
+            return redirect(url_for('index'))
         user.active = True
         remember = request.form.get("remember", "no") == "yes"
         if login_user(user, remember=remember):
@@ -55,10 +50,11 @@ def login():
             user.current_token = session['csrf_token']
             db.session.commit()
             print 'finish', user.current_token
-            return redirect('/#!/')
+            # return redirect(url_for('todo'))
+            return redirect('/todo#!/')
         else:
             flash("Sorry, but you could not log in.")
-    return render_template("login.html", form = form)
+    return render_template("index.html", form = form)
 
 @app.route("/logout")
 @login_required
@@ -68,7 +64,7 @@ def logout():
     session.clear()
     logout_user()
     flash("Logged out.")
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
 
 @app.errorhandler(404)
@@ -77,21 +73,9 @@ def not_found(error):
     :param error:
     :return: page with status 404
     '''
-    return make_response(jsonify({'error': 'Not found', 'status':404}), 404)
+    return render_template('404.html')
 
-# end global functions
 
-# def check_token(token):
-#     try:
-#         user = User.query.filter_by(current_token=token).first()
-#         if not user:
-#             return abort(400, message='Token does not correct', status=400)
-#         else:
-#             return user
-#     except KeyError:
-#         return abort(400, message='You must have a token', status=400)
-
-# Start Sticker Api
 def get_user_folders(user):
     user_folders_id = [x.id for x in user.folders]
     return user_folders_id
@@ -102,7 +86,6 @@ def get_user_from_id(user_id):
     return user
 
 
-# DONE!
 class StickerApi(Resource):
 
     @login_required
@@ -149,7 +132,7 @@ def check_sticker_owner(sticker_id, user):
     else:
         return sticker
 
-# DONE!
+
 class OneStickerApi(Resource):
 
     @login_required
@@ -180,12 +163,7 @@ class OneStickerApi(Resource):
 
 api.add_resource(OneStickerApi, '/api/sticker/<sticker_id>')
 
-# End Sticker Api
 
-
-# Start Task Api
-
-# DONE!
 class TaskApi(Resource):
 
     @login_required
@@ -225,7 +203,7 @@ class TaskApi(Resource):
 api.add_resource(TaskApi, '/api/task')
 
 
-def task_not_exist(task_id):
+def task_exist(task_id):
     task = Task.query.filter_by(id=task_id).first()
     if task:
         return task
@@ -233,47 +211,29 @@ def task_not_exist(task_id):
         return abort(404, message='This task does not exist', status=404)
 
 
-def check_owner_task(task_id, user):
-        task = task_not_exist(task_id)
-        task_owner = db.session.query(User).filter \
-                    (~User.folders.any(Folder.stickers.any(Sticker.tasks.any(Task.id == user.id)))).first()
-        task_owner = task_owner
-        if task_owner.id == user.id:
-            return task
-        else:
-            return abort(403, message='Access is denied', status=403)
-
-
 class OneTaskApi(Resource):
 
     @login_required
     def get(self, task_id):
-        user = get_user_from_id(session['user_id'])
-        task = check_owner_task(task_id, user)
+        task = task_exist(task_id)
         return {'task': task.as_json()}
 
     @login_required
     def put(self, task_id):
-        user = get_user_from_id(session['user_id'])
-        task = check_owner_task(task_id, user)
+        task = task_exist(task_id)
         db.session.query(Task).filter(Task.id == task.id).update(request.json)
         db.session.commit()
         return {'task': task.as_json()}, 201
 
     @login_required
     def delete(self, task_id):
-        user = get_user_from_id(session['user_id'])
-        task = check_owner_task(task_id, user)
+        task = task_exist(task_id)
         task.trash = True
         db.session.commit()
         return '', 204
 
 api.add_resource(OneTaskApi, '/api/task/<task_id>')
 
-# End Task Api
-
-
-# Start Folder Api
 
 class FolderApi(Resource):
 
@@ -294,7 +254,7 @@ class FolderApi(Resource):
 
 api.add_resource(FolderApi, '/api/folder')
 
-def folder_not_exist(folder_id, user_id):
+def folder_exist(folder_id, user_id):
     folder = Folder.query.filter_by(id=folder_id, user_id=user_id).first()
     if folder:
         return folder
@@ -306,13 +266,13 @@ class OneFolderApi(Resource):
     @login_required
     def get(self, folder_id):
         user = get_user_from_id(session['user_id'])
-        folder = folder_not_exist(folder_id, user.id)
+        folder = folder_exist(folder_id, user.id)
         return {'folder': folder.as_json()}
 
     @login_required
     def put(self, folder_id):
         user = get_user_from_id(session['user_id'])
-        folder = folder_not_exist(folder_id, user.id)
+        folder = folder_exist(folder_id, user.id)
         db.session.query(Folder).filter(Folder.id == folder.id).update(request.json)
         db.session.commit()
         return {'folder': folder.as_json()}, 201
@@ -320,11 +280,9 @@ class OneFolderApi(Resource):
     @login_required
     def delete(self, folder_id):
         user = get_user_from_id(session['user_id'])
-        folder = folder_not_exist(folder_id, user.id)
+        folder = folder_exist(folder_id, user.id)
         folder.trash = True
         db.session.commit()
         return '', 204
 
 api.add_resource(OneFolderApi, '/api/folder/<folder_id>')
-
-# End Folder Api
