@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block todo %}
+    <div class="row content">
+        <div class="col-md-3">
+            <div ui-view="view-folder-list"></div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="spinner" us-spinner></div>
+            <div ui-view="view-sticker-list"></div>
+        </div>
+    </div>
+{% endblock %}

@@ -4,7 +4,8 @@
     <li ng-repeat="folder in folders" class="folder">
         <!--a href="#!/folder/{{folder.id}}">{{folder.name}}</a-->
         <a ui-sref="folder({id:folder.id})">
-            <i class="fa fa-folder"></i>
+            <i class="fa fa-folder" ng-hide="isCurrent(folder.id)"></i>
+            <i class="fa fa-folder-open" ng-show="isCurrent(folder.id)"></i>
             {{folder.name}}
         </a>
         <button class="btn btn-link btn-xs delete" ng-click="deleteFolder(folder, $index)"><i class="fa fa-remove"></i></button>
@@ -12,6 +13,6 @@
 </ul>
 
 <form class="form-horizontal">
-    <input type="text" ng-model="folderName" ng-model-instant>
+    <input type="text" placeholder="Add folder" ng-model="folderName" ng-model-instant>
     <button class="btn btn-link btn-xs" ng-click="addFolder()"><i class="fa fa-plus"></i></button>
 </form>

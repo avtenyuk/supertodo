@@ -69,6 +69,15 @@ a:hover{
 }
 
 //base.html====================================================================
+.header{
+  .logo{
+	img{
+	  width: 48px;
+	}
+  }
+}
+
+
 .stickers{
 	li.sticker{
 		//border: solid 2px;
@@ -122,8 +131,9 @@ a:hover{
 	  .font_h5;
 
 	}
+	.tasks-title{.font_h5(@color_gray_dark, bold);}
 	.tasks{
-	  .font_h5;
+	  .font_h6();
 	  padding: 0;
 	  margin: 0;
 	  li{
@@ -165,11 +175,11 @@ a:hover{
 .folders{
   .folder{
 	//Need to fix
-	button .delete{
-	  display: none;
+	.delete{
+	  visibility: hidden;
 	}
 	&:hover{
-	  button .delete{display: block;}
+	  .delete{visibility: visible;}
 	}
   }
 }
