@@ -12,16 +12,17 @@ class Anonymous(AnonymousUserMixin):
 
 login_manager = LoginManager()
 login_manager.anonymous_user = Anonymous
-login_manager.login_view = "login"
+login_manager.login_view = "index"
 login_manager.login_message = u"Please log in to access this page."
 login_manager.refresh_view = "reauth"
-login_manager.setup_app(app)
+login_manager.init_app(app)
 
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
+todo_main_url = '/todo#!/'
 
 @app.route("/todo")
 @login_required
@@ -32,26 +33,20 @@ def todo():
 @app.route("/", methods=["GET", "POST"])
 def index():
     if 'user_id' in session:
-        return redirect(url_for('todo'))
+        return redirect(todo_main_url)
     form = LoginForm()
     if request.method == "POST" and "username" in request.form and form.validate_on_submit():
         username = request.form["username"]
         password = request.form["password"]
         user = User.query.filter_by(nickname=username, password=password).first()
         if not user:
-            flash("User does not exist or your password is bad. Try again")
+            flash("User does not exist or your password is wrong. Try again")
             return redirect(url_for('index'))
         user.active = True
         remember = request.form.get("remember", "no") == "yes"
         if login_user(user, remember=remember):
             flash("Logged in!")
-            print 'start', user.current_token
-            print session['csrf_token']
-            user.current_token = session['csrf_token']
-            db.session.commit()
-            print 'finish', user.current_token
-            # return redirect(url_for('todo'))
-            return redirect('/todo#!/')
+            return redirect(todo_main_url)
         else:
             flash("Sorry, but you could not log in.")
     return render_template("index.html", form = form)
@@ -59,8 +54,6 @@ def index():
 @app.route("/logout")
 @login_required
 def logout():
-    current_user.current_token = ''
-    db.session.commit()
     session.clear()
     logout_user()
     flash("Logged out.")
