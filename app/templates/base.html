@@ -43,9 +43,12 @@
 
 	<div class="container-fluid">
 
-		<div class="row">
-			<div class="col-md-10">
-                Awesome logo must be here
+		<div class="row header">
+			<div class="col-md-2 logo">
+                <img src="static/images/logo.png" alt="Super ToDo">
+            </div>
+            <div class="col-md-8">
+                Awesome slogan must be here
             </div>
 			<div class="col-md-2">
                 <i class="fa fa-user"> {{ user }} </i>
@@ -63,18 +66,14 @@
                 {% endwith %}
             </div>
 		</div>
+
         {% block auth %}
         {% endblock %}
-        <div class="col-md-3">
-            <div ui-view="view-folder-list"></div>
-        </div>
 
-        <div class="col-md-9">
-            <div class="spinner" us-spinner></div>
-            <div ui-view="view-sticker-list"></div>
-        </div>
+        {% block todo %}
+        {% endblock %}
 
-		<div class="row">
+		<div class="row footer">
 			<div class="col-md-12">
 				Footer
 			</div>
