@@ -18,14 +18,14 @@
     {{form.hidden_tag()}}
     <p>
         Please enter your username:<br>
-        {{ form.username(size=100)}}
+        {{ form.username(size=20)}}
         {% for error in form.errors.username %}
         <span style="color: red;">[{{error}}]</span>
         {% endfor %}<br>
     </p>
     <p>
         Please enter your password:<br>
-        {{ form.password(size=100)}}
+        {{ form.password(size=20)}}
         {% for error in form.errors.password %}
         <span style="color: red;">[{{error}}]</span>
         {% endfor %}<br>
@@ -33,5 +33,7 @@
     <p>{{form.remember_me}} Remember Me</p>
     <p><input type="submit" value="Sign In"></p>
 </form>
-
+<div class="regist">
+    <a href="/registration">Registration</a>
+</div>
 {% endblock %}

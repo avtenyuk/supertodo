@@ -1,5 +1,6 @@
-import datetime
+# coding: utf-8
 
+import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
 from flask.ext.login import UserMixin

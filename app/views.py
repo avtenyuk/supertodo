@@ -1,9 +1,12 @@
+# coding: utf-8
 
 from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, session
 from flask_restful import Resource, abort
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, AnonymousUserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import app, db, api
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 from models import Sticker, Folder, Task, User
 
 
@@ -50,6 +53,16 @@ def index():
         else:
             flash("Sorry, but you could not log in.")
     return render_template("index.html", form = form)
+
+@app.route('/registration', methods=["GET", "POST"])
+def registration():
+    if 'user_id' in session:
+        return redirect(todo_main_url)
+    form = RegisterForm()
+    if request.method == "POST" and form.validate_on_submit():
+        print True
+
+    return render_template('registration.html', form=form)
 
 @app.route("/logout")
 @login_required
