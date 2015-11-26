@@ -58,16 +58,15 @@ app.config(function($stateProvider){$stateProvider
 });
 
 app.directive('focusOn', function() {
-   return function(scope, elem, attr) {
-       console.log(elem);
-       console.log(attr);
-       scope.$on(true, function(e){
-           elem[0].focus();
-       });
-      //scope.$on(attr.focusOn, function(e) {
-      //    console.log('FOCUS');
-      //    console.log(elem);
-      //    elem[0].focus();
-      //});
-   };
+    return {
+        limit: 'A',
+        scope: {
+            focusOn: "="
+        },
+        link: function(scope, elem, attr) {
+            scope.$watch("focusOn", function(e){
+                elem[0].focus();
+            });
+        }
+    }
 });
