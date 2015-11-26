@@ -8,7 +8,6 @@ controllers.controller('StickerListCtrl',['$scope', '$http', '$location', '$stat
     Sticker.get({}, function(data){
         $scope.stickers = $filter('filter')(data.stickers, {folder_id: $stateParams.id});
         $scope.orderProp = '!created';
-        $scope.createForm = false;  // This is for task's creating form
 
         $scope.addSticker = function(data){
             var new_obj = {title: "", memo: "", folder_id: $stateParams.id ? $stateParams.id : 1};

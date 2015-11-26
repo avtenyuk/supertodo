@@ -1,14 +1,14 @@
 <p class="memo">{{ sticker.memo }}</p>
 <p class="tasks-title" ng-show="tasks.length">Tasks</p>
 <p class="tasks-title" ng-hide="tasks.length">Has no tasks</p>
-<div ng-init="createForm = false">{{ createForm }}</div>
+<div ng-init="createForm = false"></div>
 <div ng-click="createForm = true">
     Create task
 </div>
 <div ng-show="createForm">
     <form class="form-horizontal">
         <div class="input-group">
-            <input type="text" ng-model="formTaskText" ng-blur="createForm = false" focus-on="createForm">
+            <input type="text" ng-model="tasks.formTaskText" ng-blur="createForm = false" focus-on="createForm">
             <button class="btn btn-link btn-xs" ng-click="addTask(sticker)"><i class="fa fa-plus"></i></button>
         </div>
     </form>
