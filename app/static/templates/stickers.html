@@ -15,9 +15,14 @@ Sort by:
 
     <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
-        <div class="header">
-            <span class="title">
-                {{ sticker.title }}
+        <div class="header" ng-init="sticker.updatedTitle = sticker.title; sticker.updatedMemo = sticker.memo">
+            <span class="title" ng-click="sticker.editTitle = true">
+                <p ng-hide="sticker.editTitle">
+                    {{ sticker.title }}
+                </p>
+                <p ng-show="sticker.editTitle">
+                    <input class="edit" type="text" value="{{ sticker.title }}" ng-blur="sticker.editTitle = false; saveSticker(sticker, $index)" ng-model="sticker.updatedTitle">
+                </p>
             </span>
             <span class="buttons">
                 <i role="button" class="fa fa-toggle-{{ sticker.toggleStatus }}" ng-click="sticker.toggleEndedTasks()"></i>
