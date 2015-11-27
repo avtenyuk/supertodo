@@ -1,15 +1,17 @@
+<!--
 Search: <input ng-model="query" placeholder="Search...">
 Sort by:
 <select ng-model="orderProp">
   <option value="title">Alphabetical</option>
   <option value="created">Newest</option>
 </select>
+-->
 
-<button class="btn btn-default" ng-click="addSticker()"><i class="fa fa-plus"> New sticker</i></button>
+<!--button class="btn btn-default" ng-click="addSticker()"><i class="fa fa-plus"> New sticker</i></button-->
 
 <div class="no-stickers" ng-hide="stickers.length">There are no stickers. Make it now!</div>
 
-<ul class="stickers" ng-show="stickers.length">
+<ul class="stickers">
 
     <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
@@ -91,5 +93,12 @@ Sort by:
             </span>
         </div>
 
+    </li>
+
+    <li role="button" class="sticker new-sticker-button" ng-click="addSticker()">
+        <div class="internal-block">
+            <p class="plus">+</p>
+            <p class="caption">Create a sticker</p>
+        </div>
     </li>
 </ul>

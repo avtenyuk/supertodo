@@ -55,6 +55,19 @@
 			</div>
             {% endblock %}
 		</div>
+        <div class="row global-top-panel">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <input class="col-md-12" ng-model="query" placeholder="Search...">
+                <!--
+                Sort by:
+                <select ng-model="stickers.orderProp">
+                  <option value="title">Alphabetical</option>
+                  <option value="created">Newest</option>
+                </select>
+                -->
+            </div>
+        </div>
 
         {% block auth %}
         {% endblock %}

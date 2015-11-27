@@ -1,8 +1,7 @@
 <ul class="folders">
     <!--li><a href="#!/">ALL</a></li-->
-    <li><a ui-sref="index"><i class="fa fa-folder"></i> ALL</a></li>
+    <li class="root-folder"><a ui-sref="index"><i class="fa fa-folder-open"></i> {{ username }}</a></li>
     <li ng-repeat="folder in folders" class="folder">
-        <!--a href="#!/folder/{{folder.id}}">{{folder.name}}</a-->
         <a ui-sref="folder({id:folder.id})">
             <i class="fa fa-folder" ng-hide="isCurrent(folder.id)"></i>
             <i class="fa fa-folder-open" ng-show="isCurrent(folder.id)"></i>
