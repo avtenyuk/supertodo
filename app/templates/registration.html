@@ -5,9 +5,9 @@
 <form action="" method="post" name="login">
     {{form.hidden_tag()}}
     <p>
-        Please enter your username:<br>
-        {{ form.username(size=30)}}
-        {% for error in form.errors.username %}
+        Please enter your e-mail:<br>
+        {{ form.email(size=30)}}
+        {% for error in form.errors.email %}
         <span style="color: red;">[{{error}}]</span>
         {% endfor %}<br>
     </p>
@@ -25,13 +25,7 @@
         <span style="color: red;">[{{error}}]</span>
         {% endfor %}<br>
     </p>
-    <p>
-        Please enter your e-mail:<br>
-        {{ form.email(size=30)}}
-        {% for error in form.errors.email %}
-        <span style="color: red;">[{{error}}]</span>
-        {% endfor %}<br>
-    </p>
+
     <p><input type="submit" value="Register"></p>
 </form>
 

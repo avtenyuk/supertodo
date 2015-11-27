@@ -12,11 +12,11 @@ class LoginForm(Form):
 
 
 class RegisterForm(Form):
-    username = StringField('Username', [validators.Length(min=3, max=25)])
     email = StringField('Email Address', [validators.Length(min=6, max=35), Email()])
     password = PasswordField('New Password', [
         validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
+        validators.EqualTo('confirm', message='Passwords must match'),
+        validators.Length(min=6, max=35),
     ])
     confirm = PasswordField('Repeat Password')
 
@@ -27,8 +27,9 @@ class RegisterForm(Form):
         rv = Form.validate(self)
         if not rv:
             return False
-        username = User.query.filter_by(nickname=self.username.data).first()
+        new_username = self.email.data.split('@')[0]
+        username = User.query.filter_by(nickname=new_username).first()
         if username:
-            self.username.errors.append('This name is already taken ')
+            self.email.errors.append('This email is already taken ')
             return False
         return True

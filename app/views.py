@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, session
+from flask import render_template, redirect, flash, request, url_for, session
 from flask_restful import Resource, abort
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -30,7 +30,8 @@ todo_main_url = '/todo#!/'
 @app.route("/todo")
 @login_required
 def todo():
-    return render_template("todo.html")
+    username = current_user.nickname
+    return render_template("todo.html", username=username)
 
 
 @app.route("/", methods=["GET", "POST"])
