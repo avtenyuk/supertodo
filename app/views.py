@@ -61,8 +61,14 @@ def registration():
         return redirect(todo_main_url)
     form = RegisterForm()
     if request.method == "POST" and form.validate_on_submit():
-        print True
-
+        new_user = User()
+        new_user.nickname = request.form['email'].split('@')[0]
+        new_user.email = request.form['email']
+        new_user.password = generate_password_hash(request.form['password'])
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Try to login, dear {0}'.format(new_user.nickname))
+        return redirect(url_for(index))
     return render_template('registration.html', form=form)
 
 @app.route("/logout")
