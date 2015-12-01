@@ -213,8 +213,11 @@ a{
 		cursor: pointer;
 	  }
 	  &:hover{
-		opacity: 0.5;
-		.edit-button{display: inline;}
+		color: @color_gray_light;
+		.edit-button{
+		  display: inline;
+		  color: @color_gray_dark;
+		}
 	  }
 	}
 	.buttons{
@@ -244,7 +247,11 @@ a{
 		cursor: pointer;
 	  }
 	  &:hover{
-		.edit-button{display: inline;}
+		color: @color_gray_light;
+		.edit-button{
+		  display: inline;
+		  color: @color_gray_dark;
+		}
 	  }
 	}
 	.tasks-title{.font_h5(@color_gray_dark, bold);}

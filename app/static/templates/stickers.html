@@ -19,6 +19,7 @@ Sort by:
             <span class="title" ng-dblclick="sticker.editTitle = true">
                 <p ng-hide="sticker.editTitle">
                     {{ sticker.title }}
+                    <span ng-if="!sticker.title">...</span>
                     <span class="edit-button" ng-click="sticker.editTitle = true">
                         <i class="fa fa-edit"></i>
                     </span>
@@ -41,6 +42,7 @@ Sort by:
                 <div class="memo" ng-dblclick="sticker.editMemo = true">
                     <p ng-hide="sticker.editMemo">
                         {{ sticker.memo }}
+                        <span ng-if="!sticker.memo">...</span>
                         <span class="edit-button">
                             <i class="fa fa-edit" ng-click="sticker.editMemo = true"></i>
                         </span>
