@@ -1,4 +1,11 @@
-<p class="memo">{{ sticker.memo }}</p>
+<!--p class="memo" ng-click="sticker.editMemo">
+    <p ng-hide="sticker.editMemo">
+        {{ sticker.memo }}
+    </p>
+    <p ng-show="sticker.editMemo">
+        <input class="edit" type="text" value="{{ sticker.title }}" ng-blur="sticker.editTitle = false; saveSticker(sticker, $index)" ng-model="sticker.updatedTitle" focus-on="sticker.editTitle">
+    </p>
+</p-->
 <p class="tasks-title" ng-show="tasks.length">Tasks</p>
 <p class="tasks-title" ng-hide="tasks.length">Has no tasks</p>
 <div ng-init="createForm = false"></div>

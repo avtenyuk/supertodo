@@ -16,12 +16,15 @@ Sort by:
     <li class="sticker" id="sticker-{{ sticker.id }}" ng-repeat="sticker in stickers | filter: query | orderBy: orderProp">
 
         <div class="header" ng-init="sticker.updatedTitle = sticker.title; sticker.updatedMemo = sticker.memo">
-            <span class="title" ng-click="sticker.editTitle = true">
+            <span class="title" ng-dblclick="sticker.editTitle = true">
                 <p ng-hide="sticker.editTitle">
                     {{ sticker.title }}
+                    <span class="edit-button" ng-click="sticker.editTitle = true">
+                        <i class="fa fa-edit"></i>
+                    </span>
                 </p>
                 <p ng-show="sticker.editTitle">
-                    <input class="edit" type="text" value="{{ sticker.title }}" ng-blur="sticker.editTitle = false; saveSticker(sticker, $index)" ng-model="sticker.updatedTitle">
+                    <input class="edit" type="text" value="{{ sticker.title }}" ng-blur="sticker.editTitle = false; saveSticker(sticker, $index)" ng-model="sticker.updatedTitle" focus-on="sticker.editTitle">
                 </p>
             </span>
             <span class="buttons">
@@ -34,7 +37,18 @@ Sort by:
 
         <!-- Normal mode -->
         <div class="body" ng-hide="sticker.mode">
-            <div ng-controller="TaskListCtrl">
+            <div ng-controller="TaskListCtrl" ng-init="sticker.editMemo = false">
+                <div class="memo" ng-dblclick="sticker.editMemo = true">
+                    <p ng-hide="sticker.editMemo">
+                        {{ sticker.memo }}
+                        <span class="edit-button">
+                            <i class="fa fa-edit" ng-click="sticker.editMemo = true"></i>
+                        </span>
+                    </p>
+                    <p ng-show="sticker.editMemo">
+                        <input class="edit" type="text" value="{{ sticker.memo }}" ng-blur="sticker.editMemo = false; saveSticker(sticker, $index)" ng-model="sticker.updatedMemo" focus-on="sticker.editMemo">
+                    </p>
+                </div>
                 <ng-include src="'static/templates/tasks.html'" onload="sticker_id = sticker.id"></ng-include>
                 <span ng-hide="true">
                     <!-- Pass variables from tasks scope to stickers scope -->

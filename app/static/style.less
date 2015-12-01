@@ -198,10 +198,23 @@ a{
 	  width: 200px;
 	  max-width: 200px;
 	  position: relative;
+	  cursor: pointer;
 	  .edit{
 		background: none;
 		border: solid 1px @color_gray_light;
 		border-radius: 3px;
+		width: 180px;
+	  }
+	  .edit-button{
+		display: none;
+		position: absolute;
+		z-index: 999;
+		right: 60px;
+		cursor: pointer;
+	  }
+	  &:hover{
+		opacity: 0.5;
+		.edit-button{display: inline;}
 	  }
 	}
 	.buttons{
@@ -217,7 +230,22 @@ a{
 	overflow: auto;
 	.memo{
 	  .font_h5;
-
+	  .edit{
+		background: none;
+		border: solid 1px @color_gray_light;
+		border-radius: 3px;
+		width: 100%;
+	  }
+	  .edit-button{
+		display: none;
+		position: absolute;
+		z-index: 999;
+		right: 10px;
+		cursor: pointer;
+	  }
+	  &:hover{
+		.edit-button{display: inline;}
+	  }
 	}
 	.tasks-title{.font_h5(@color_gray_dark, bold);}
 	.tasks{
