@@ -1,9 +1,12 @@
+# coding: utf-8
 
-from flask import render_template, redirect, flash, jsonify, make_response, request, url_for, session
+from flask import render_template, redirect, flash, request, url_for, session
 from flask_restful import Resource, abort
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user, AnonymousUserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import app, db, api
-from forms import LoginForm
+from forms import LoginForm, RegisterForm
 from models import Sticker, Folder, Task, User
 
 
@@ -12,55 +15,65 @@ class Anonymous(AnonymousUserMixin):
 
 login_manager = LoginManager()
 login_manager.anonymous_user = Anonymous
-login_manager.login_view = "login"
+login_manager.login_view = "index"
 login_manager.login_message = u"Please log in to access this page."
 login_manager.refresh_view = "reauth"
-login_manager.setup_app(app)
+login_manager.init_app(app)
 
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
+todo_main_url = '/todo#!/'
 
 @app.route("/todo")
 @login_required
 def todo():
-    return render_template("todo.html")
+    username = current_user.nickname
+    return render_template("todo.html", username=username)
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if 'user_id' in session:
-        return redirect(url_for('todo'))
+        return redirect(todo_main_url)
     form = LoginForm()
     if request.method == "POST" and "username" in request.form and form.validate_on_submit():
         username = request.form["username"]
         password = request.form["password"]
         user = User.query.filter_by(nickname=username, password=password).first()
         if not user:
-            flash("User does not exist or your password is bad. Try again")
+            flash("User does not exist or your password is wrong. Try again")
             return redirect(url_for('index'))
         user.active = True
         remember = request.form.get("remember", "no") == "yes"
         if login_user(user, remember=remember):
             flash("Logged in!")
-            print 'start', user.current_token
-            print session['csrf_token']
-            user.current_token = session['csrf_token']
-            db.session.commit()
-            print 'finish', user.current_token
-            # return redirect(url_for('todo'))
-            return redirect('/todo#!/')
+            return redirect(todo_main_url)
         else:
             flash("Sorry, but you could not log in.")
     return render_template("index.html", form = form)
 
+@app.route('/registration', methods=["GET", "POST"])
+def registration():
+    if 'user_id' in session:
+        return redirect(todo_main_url)
+    form = RegisterForm()
+    if request.method == "POST" and form.validate_on_submit():
+        new_user = User()
+        new_user.nickname = request.form['email'].split('@')[0]
+        new_user.email = request.form['email']
+        new_user.password = generate_password_hash(request.form['password'])
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Try to login, dear {0}'.format(new_user.nickname))
+        return redirect(url_for(index))
+    return render_template('registration.html', form=form)
+
 @app.route("/logout")
 @login_required
 def logout():
-    current_user.current_token = ''
-    db.session.commit()
     session.clear()
     logout_user()
     flash("Logged out.")
